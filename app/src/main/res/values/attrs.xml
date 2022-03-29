@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="ProgressView">
+        <attr name="ratio" format="float" />
+        <attr name="strokeColor" format="color" />
+        <attr name="fillColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="TodoView">
+
+    </declare-styleable>
+
+</resources>

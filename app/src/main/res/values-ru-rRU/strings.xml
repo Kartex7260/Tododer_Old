@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_create">Создать</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="main_contentDescription_scroll">Все планы</string>
+    <string name="main_contentDescription_add">Добавить ллан</string>
+    <string name="todo_card_contentDescription_more">Больше</string>
+    <string name="todo_menu_delete">Удалить</string>
+    <string name="detail_screen_title">Заголовок</string>
+    <string name="detail_screen_remark">Описание</string>
+    <string name="dialog_filter_title">Фильтровать</string>
+    <string name="dialog_filter_by_title">По заголовку</string>
+    <string name="dialog_filter_by_time">По времени</string>
+    <string name="cancel">Отмена</string>
+</resources>

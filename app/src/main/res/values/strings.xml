@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name" translatable="false">Tododer</string>
+    <string name="main_create">Create new</string>
+    <string name="menu_settings">Settings</string>
+    <string name="main_contentDescription_scroll">All plans</string>
+    <string name="main_contentDescription_add">Add plan</string>
+    <string name="todo_card_contentDescription_more">More</string>
+    <string name="todo_menu_delete">Delete</string>
+    <string name="detail_screen_title">Title</string>
+    <string name="detail_screen_remark">Remark</string>
+    <string name="dialog_filter_title">Filter</string>
+    <string name="dialog_filter_by_title">By Title</string>
+    <string name="dialog_filter_by_time">By time</string>
+    <string name="cancel">Cancel</string>
+    <!-- Strings used for fragments for navigation -->
+
+</resources>
