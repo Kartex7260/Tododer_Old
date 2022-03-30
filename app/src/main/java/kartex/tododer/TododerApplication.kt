@@ -3,13 +3,11 @@ package kartex.tododer
 import android.app.Application
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import kartex.tododer.lib.Const
 import kartex.tododer.lib.extensions.createNewTask
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.extensions.toDpi
 import kartex.tododer.lib.model.CachePlanDB
 import kartex.tododer.lib.model.ITodoDB
-import kartex.tododer.lib.model.PlanTransmitter
 import kartex.tododer.lib.todo.IPlan
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -22,11 +20,10 @@ import kartex.tododer.ui.dialogs.SortDialogFragment
 
 class TododerApplication : Application(), DIAware {
 
-	private val db: ITodoDB<IPlan> = CachePlanDB()
+	private val db: CachePlanDB = CachePlanDB()
 
 	override val di by DI.lazy {
 		bindSingleton<ITodoDB<IPlan>>(DITags.DB_MAIN) { db }
-		bindSingleton { PlanTransmitter() }
 
 		bindSingleton<ViewGroup.LayoutParams>(DITags.LP_MAIN_CARD) {
 			val ths = this@TododerApplication
@@ -43,9 +40,7 @@ class TododerApplication : Application(), DIAware {
 		}
 
 		bindSingleton { SortDialogFragment() }
-		bindSingleton { DIProvider(
-			Const.SORT
-		) }
+		bindSingleton { DIProvider() }
 	}
 
 	override fun onCreate() {
