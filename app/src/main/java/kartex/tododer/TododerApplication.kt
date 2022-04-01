@@ -16,6 +16,7 @@ import org.kodein.di.bindSingleton
 import kartex.tododer.lib.Const.DITags
 import kartex.tododer.lib.Const.MainScreen
 import kartex.tododer.lib.DIProvider
+import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.ui.dialogs.SortDialogFragment
 
 class TododerApplication : Application(), DIAware {
@@ -23,7 +24,7 @@ class TododerApplication : Application(), DIAware {
 	private val db: CachePlanDB = CachePlanDB()
 
 	override val di by DI.lazy {
-		bindSingleton<ITodoDB<IPlan>>(DITags.DB_MAIN) { db }
+		bindSingleton<ITodoDB<out ITodo>>(DITags.DB_MAIN) { db }
 
 		bindSingleton<ViewGroup.LayoutParams>(DITags.LP_MAIN_CARD) {
 			val ths = this@TododerApplication

@@ -17,14 +17,18 @@ class PlanView : TodoView<IPlan> {
 	private lateinit var textViewRemark: TextView
 	// </editor-fold>
 
+	// <editor-fold desc="PROP`S">
 	override val xmlLayoutId: Int
 		get() = R.layout.card_plan
+	// </editor-fold>
 
+	// <editor-fold desc="CTOR`S">
 	constructor(context: Context) : super(context)
 
 	constructor(context: Context, attr: AttributeSet?) : super(context, attr)
 
 	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int) : super(context, attr, defStyleAttr)
+	// </editor-fold>
 
 	override fun initViews(layout: ViewGroup) {
 		super.initViews(layout)

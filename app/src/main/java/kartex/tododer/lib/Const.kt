@@ -18,8 +18,14 @@ object Const {
 	}
 
 	object DialogTags {
-		const val MAIN: String = "main"
+		const val MAIN: String = "dialog_main"
+	}
+
+	object FragmentTags {
+		const val MAIN: String = "fragment_main"
 	}
 
 	val SORT: TodoSort = SortByTime.INST
+
+	const val BACK_STACK_MAIN: String = "bs_main"
 }
