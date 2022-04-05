@@ -1,6 +1,7 @@
 package kartex.tododer.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.text.Editable
 import android.util.AttributeSet
 import android.view.ViewGroup
@@ -17,6 +18,20 @@ open class RemarkTodoDetailView<Todo : IRemarkTodo> : TodoDetailView<Todo> {
 	// <editor-fold desc="PROP`S">
 	override val xmlLayoutId: Int
 		get() = R.layout.detail_card_remark_todo
+
+	open var remark: String
+		get() {
+			bindTodo?.run {
+				return remark
+			}
+			return editTextRemark.text.toString()
+		}
+		set(value) {
+			bindTodo?.apply {
+				remark = value
+			}
+			editTextRemark.text = Editable.Factory.getInstance().newEditable(value)
+		}
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
