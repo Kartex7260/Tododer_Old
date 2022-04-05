@@ -37,10 +37,10 @@ fun <T : ITodo> Iterable<T>.get(id: Int): T? {
 	return null
 }
 
-fun ITodoDB<IPlan>.createPlan(title: String? = null): Plan {
+fun ITodoDB<IPlan>.createPlan(title: String = ""): Plan {
 	val id = generateID()
 	val plan = Plan(id)
-	plan.title = title ?: ""
+	plan.title = title
 	add(plan)
 	return plan
 }
