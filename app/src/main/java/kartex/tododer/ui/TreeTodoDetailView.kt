@@ -1,20 +1,17 @@
 package kartex.tododer.ui
 
-import android.app.AlertDialog
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.widget.AppCompatImageButton
 import kartex.tododer.R
-import kartex.tododer.lib.Const
 import kartex.tododer.lib.DIProvider
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.ITreeTodo
 import kartex.tododer.ui.dialogs.SortDialogFragment
 import kartex.tododer.ui.sort.SortByTime
-import kartex.tododer.ui.sort.SortByTitle
 import kartex.tododer.ui.sort.TodoSort
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -39,8 +36,14 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 	override val xmlLayoutId: Int
 		get() = R.layout.detail_card_tree_todo
 
-	open val sort: TodoSort
+	open var sort: TodoSort
 		get() = diProvider.sort
+		set(value) {
+			diProvider.sort = value
+			_onChangeSort?.invoke(this, value)
+			updateSortButton()
+			updateRevButton()
+		}
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
