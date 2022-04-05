@@ -105,42 +105,6 @@ fun IPlan.toDto(): PlanDTO {
 }
 // </editor-fold>
 
-// <editor-fold desc="CUID">
-fun ITodo.getCUID(): String {
-	val stringBuilder = getParentsCUIDBuilder()
-	return addCUIDClosure(stringBuilder)
-}
-
-fun ITodo.getParentsCUIDBuilder(): StringBuilder {
-	val parents = getAllParents()
-	val stringBuilder = StringBuilder()
-	for (parent in parents.asReversed()) {
-		parent.addCUIDNode(stringBuilder)
-	}
-	return stringBuilder
-}
-
-fun ITodo.getCUIDBuilder(): StringBuilder {
-	val parents = getAllParents()
-	val stringBuilder = StringBuilder()
-	for (parent in parents.asReversed()) {
-		parent.addCUIDNode(stringBuilder)
-	}
-	addCUIDNode(stringBuilder)
-	return stringBuilder
-}
-
-fun ITodo.addCUIDNode(stringBuilder: StringBuilder) {
-	stringBuilder.append(id)
-	stringBuilder.append('-')
-}
-
-fun ITodo.addCUIDClosure(stringBuilder: StringBuilder): String {
-	stringBuilder.append(id)
-	return stringBuilder.toString()
-}
-// </editor-fold>
-
 // <editor-fold desc="saving to file">
 fun ITodo.saveToDisk(dir: String, overwrite: Boolean = true) {
 	val cuid = getCUID()

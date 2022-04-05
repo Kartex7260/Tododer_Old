@@ -5,10 +5,7 @@ import kartex.tododer.lib.model.lazy.LazyTask
 import kartex.tododer.lib.model.lazy.LazyTreeTodo
 import kartex.tododer.lib.model.oid.OIDPlan
 import kartex.tododer.lib.model.oid.OIDTask
-import kartex.tododer.lib.todo.IPlan
-import kartex.tododer.lib.todo.ITask
-import kartex.tododer.lib.todo.ITodo
-import kartex.tododer.lib.todo.ITreeTodo
+import kartex.tododer.lib.todo.*
 import kartex.tododer.lib.todo.dto.IPlansParent
 import kartex.tododer.lib.todo.dto.ITodosParent
 import kartex.tododer.lib.todo.dto.TreeTodoDTO
