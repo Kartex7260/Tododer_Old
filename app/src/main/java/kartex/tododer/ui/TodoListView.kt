@@ -2,19 +2,28 @@ package kartex.tododer.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
+import kartex.tododer.lib.Const
 import kartex.tododer.lib.IBindable
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.model.TodoDBEventArgs
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.visitor.CardViewVisitor
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
+import org.kodein.di.DI
+import org.kodein.di.DIAware
+import org.kodein.di.android.closestDI
+import org.kodein.di.instance
 import savvy.toolkit.Event
 
-open class TodoListView<DB: IEventTodoDB<ITodo>> : NestedScrollView, IBindable<DB> {
+open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : NestedScrollView, IBindable<DB>, DIAware {
 
 	// <editor-fold desc="FIELD`S">
+	override val di: DI by closestDI()
+	private val todoViewLayoutParams: ViewGroup.LayoutParams by instance(Const.DITags.LP_MAIN_CARD)
+
 	private lateinit var _root: LinearLayout
 	private lateinit var _cardVisitor: CardViewVisitor
 
@@ -67,16 +76,16 @@ open class TodoListView<DB: IEventTodoDB<ITodo>> : NestedScrollView, IBindable<D
 		onReadFromBind(db)
 	}
 
-	protected open fun onAdd(any: Any?, args: TodoDBEventArgs<ITodo>) {
+	protected open fun onAdd(any: Any?, args: TodoDBEventArgs<Todo>) {
 		val todo = args.todo
 		showTodo(todo)
 	}
-	protected open fun onEdit(any: Any?, args: TodoDBEventArgs<ITodo>) {
+	protected open fun onEdit(any: Any?, args: TodoDBEventArgs<Todo>) {
 		val todo = args.todo
 		val view = _root.findViewById<TodoView<ITodo>>(todo.id)
 		view.updateFromBind()
 	}
-	protected open fun onRemove(any: Any?, args: TodoDBEventArgs<ITodo>) {
+	protected open fun onRemove(any: Any?, args: TodoDBEventArgs<Todo>) {
 		val todo = args.todo
 		val view = _root.findViewById<TodoView<ITodo>>(todo.id)
 		_root.removeView(view)
@@ -100,7 +109,7 @@ open class TodoListView<DB: IEventTodoDB<ITodo>> : NestedScrollView, IBindable<D
 
 	private fun showTodo(todo: ITodo) {
 		val view = createView(todo)
-		_root.addView(view)
+		_root.addView(view, todoViewLayoutParams)
 	}
 
 	private fun onClickCard(todo: ITodo, view: TodoView<out ITodo>) {
