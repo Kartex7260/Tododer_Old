@@ -1,6 +1,7 @@
 package kartex.tododer.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.text.Editable
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
+import androidx.annotation.StyleableRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
@@ -31,11 +33,28 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 	open val xmlLayoutId: Int
 		get() = R.layout.detail_card_todo
 
+	open val xmlStyleable: IntArray
+		get() = R.styleable.TodoDetailView
+
 	open var bindTodo: Todo?
 		get() = _bindTodo
 		set(value) {
 			_bindTodo = value
 			updateFromBind()
+		}
+
+	open var title: String
+		get() {
+			_bindTodo?.run {
+				return title
+			}
+			return editTextTitle.text.toString()
+		}
+		set(value) {
+			_bindTodo?.apply {
+				title = value
+			}
+			editTextTitle.text = Editable.Factory.getInstance().newEditable(value)
 		}
 	// </editor-fold>
 
@@ -72,6 +91,10 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 		deleteButton.setOnClickListener(l)
 	}
 
+	protected open fun obtainStyles(typedArray: TypedArray) {
+		title = typedArray.getString(R.styleable.TodoDetailView_title) ?: ""
+	}
+
 	protected open fun onReadFromBind(todo: Todo) {}
 
 	protected open fun onWriteToBind(todo: Todo) {}
@@ -83,6 +106,14 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 
 	// <editor-fold desc="PRIVATE">
 	private fun init(attr: AttributeSet?, defStyleAttr: Int) {
+
+		context.theme.obtainStyledAttributes(attr, xmlStyleable, defStyleAttr, 0).apply {
+			try {
+				obtainStyles(this)
+			} finally {
+				recycle()
+			}
+		}
 
 		layout = getLayout(xmlLayoutId)
 		addView(layout)
