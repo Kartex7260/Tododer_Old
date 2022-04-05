@@ -2,7 +2,7 @@ package kartex.tododer.ui.sort
 
 import kartex.tododer.lib.todo.ITodo
 
-abstract class TodoSort protected constructor(open val iconResId: Int, open val reverse: Boolean = false) {
+abstract class TodoSort protected constructor(open val id: Int, open val iconResId: Int, open val reverse: Boolean = false) {
 
 	open fun <T : ITodo> sort(iterable: Iterable<T>): List<T> {
 		val sorted = sort0(iterable)

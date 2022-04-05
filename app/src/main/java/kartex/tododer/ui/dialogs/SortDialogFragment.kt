@@ -68,6 +68,16 @@ class SortDialogFragment : DialogFragment {
 	}
 
 	companion object {
+
+		fun getFromParameters(id: Int, reverse: Boolean): TodoSort? {
+			val sortResult = SortResult.values().find { it.sortObj?.id == id } ?: return null
+
+			return if (reverse)
+				sortResult.sortObjReverse
+			else
+				sortResult.sortObj
+		}
+
 		enum class SortResult(val sortObj: TodoSort? = null, val sortObjReverse: TodoSort? = null) {
 			ByTitle(SortByTitle.INST, SortByTitle.INST_REVERSE),
 			ByTime(SortByTime.INST, SortByTime.INST_REVERSE),
