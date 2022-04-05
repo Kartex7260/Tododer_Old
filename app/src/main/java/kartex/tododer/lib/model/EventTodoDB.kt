@@ -3,7 +3,7 @@ package kartex.tododer.lib.model
 import kartex.tododer.lib.todo.ITodo
 import savvy.toolkit.Event
 
-class EventTodoDB<Todo : ITodo>(private val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
+class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 
 	// <editor-fold desc="PROP`S">
 	override val onAdd: Event<TodoDBEventArgs<Todo>> = Event(this)
