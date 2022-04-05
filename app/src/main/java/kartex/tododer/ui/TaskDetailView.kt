@@ -1,11 +1,14 @@
 package kartex.tododer.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.ViewGroup
 import android.widget.CheckBox
 import kartex.tododer.R
 import kartex.tododer.lib.todo.ITask
+import kartex.tododer.ui.dialogs.SortDialogFragment
+import kartex.tododer.ui.sort.SortByTime
 
 class TaskDetailView : TreeTodoDetailView<ITask, ITask>  {
 
