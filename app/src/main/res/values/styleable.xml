@@ -7,8 +7,8 @@
         <attr name="fillColor" format="color" />
     </declare-styleable>
 
-    <declare-styleable name="TodoView">
-
+    <declare-styleable name="TodoDetailView">
+        <attr name="title" format="string" />
     </declare-styleable>
 
 </resources>
