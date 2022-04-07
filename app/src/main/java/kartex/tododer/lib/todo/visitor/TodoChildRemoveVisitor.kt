@@ -18,6 +18,7 @@ class TodoChildRemoveVisitor(private val dir: String, private val cuidBuilder: S
 		removeTasks(task, cuidBuilder.toString())
 	}
 
+	// <editor-fold desc="PRIVATE">
 	private fun removeTasks(todo: ITreeTodo<ITask>, parentsCUID: String) {
 		for (task in todo.todos) {
 			val cuid = parentsCUID + task.id
@@ -39,4 +40,5 @@ class TodoChildRemoveVisitor(private val dir: String, private val cuidBuilder: S
 		val path = Paths.get(dir, cuid)
 		Files.delete(path)
 	}
+	// </editor-fold>
 }
