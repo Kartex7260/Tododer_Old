@@ -8,7 +8,7 @@ open class StateSwitcher<T> {
 
 	private val _eventLocker = Any()
 
-	private val states: MutableMap<String, T> = HashMap()
+	private val _states: MutableMap<String, T> = HashMap()
 	private var _state: String = ""
 
 	open var state: String
@@ -22,16 +22,18 @@ open class StateSwitcher<T> {
 
 	val onStateChange: Event<StateChangeEventArgs> = Event(_eventLocker)
 
+	val states: Map<String, T>
+		get() = _states
 
 	fun register(state: String, value: T) {
-		if (states.containsKey(state))
+		if (_states.containsKey(state))
 			throw Exception("value $state already exist")
-		states[state] = value
+		_states[state] = value
 	}
 
-	fun get() = states[state]
+	fun get() = _states[state]
 
-	fun remove(key: String) = states.remove(key)
+	fun remove(key: String) = _states.remove(key)
 
 
 	companion object {

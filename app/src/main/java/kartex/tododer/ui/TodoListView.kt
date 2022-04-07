@@ -2,15 +2,18 @@ package kartex.tododer.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.widget.NestedScrollView
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.IBindable
+import kartex.tododer.lib.extensions.getViewManager
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.model.TodoDBEventArgs
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.visitor.CardViewVisitor
+import kartex.tododer.lib.todo.visitor.ViewManagerVisitor
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -26,8 +29,11 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : NestedScrollView
 
 	private lateinit var _root: LinearLayout
 	private lateinit var _cardVisitor: CardViewVisitor
+	private lateinit var _viewManager: ViewManagerVisitor
 
 	private var _bind: DB? = null
+
+	private val _eventLocker = Any()
 	// </editor-fold>
 
 	// <editor-fold desc="PROP`S">
@@ -43,7 +49,7 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : NestedScrollView
 			updateDB(_bind)
 		}
 
-	val onClick: Event<TodoViewOnClickEventArgs> = Event(this)
+	val onClick: Event<TodoViewOnClickEventArgs> = Event(_eventLocker)
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
@@ -95,6 +101,8 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : NestedScrollView
 	// <editor-fold desc="PRIVATES">
 	private fun init() {
 		_cardVisitor = CardViewVisitor(context)
+		_viewManager = context.getViewManager(_cardVisitor)
+
 		_root = LinearLayout(context).apply {
 			orientation = LinearLayout.VERTICAL
 		}
@@ -112,13 +120,13 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : NestedScrollView
 		_root.addView(view, todoViewLayoutParams)
 	}
 
-	private fun onClickCard(todo: ITodo, view: TodoView<out ITodo>) {
+	private fun onClickCard(todo: ITodo, view: View) {
 		val eventArgs = TodoViewOnClickEventArgs(todo, view)
-		onClick.invoke(this, eventArgs)
+		onClick.invoke(_eventLocker, eventArgs)
 	}
 
-	private fun createView(todo: ITodo): TodoView<out ITodo> {
-		val view = todo.resultVisit(_cardVisitor)
+	private fun createView(todo: ITodo): View {
+		val view = todo.resultVisit(_viewManager)
 		view.id = todo.id
 		view.setOnClickListener {
 			onClickCard(todo, view)

@@ -11,6 +11,7 @@ fun Context.getViewManager(viewVisitor: ITodoResultVisitor<out View>): ViewManag
 	var manager = managers[this]
 	if (manager == null) {
 		manager = ViewManagerVisitor(viewVisitor)
-	}
+	} else
+		manager.viewVisitor = viewVisitor
 	return manager
 }
