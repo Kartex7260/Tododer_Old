@@ -8,6 +8,7 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kartex.tododer.fragments.DetailFragment
 import kartex.tododer.fragments.PlanListFragment
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.model.ITodoDB
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 	}
 
 	private fun showPlanListFragment() {
-		val planListFragment = PlanListFragment()
+		val planListFragment = DetailFragment()
 		supportFragmentManager.commit {
 			setReorderingAllowed(true)
 			add(R.id.mainFragmentContainer, planListFragment, Const.FragmentTags.MAIN)

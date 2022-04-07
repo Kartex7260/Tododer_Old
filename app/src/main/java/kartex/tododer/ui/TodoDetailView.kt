@@ -106,6 +106,9 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 
 	// <editor-fold desc="PRIVATE">
 	private fun init(attr: AttributeSet?, defStyleAttr: Int) {
+		layout = getLayout(xmlLayoutId)
+		addView(layout)
+		initViews(layout)
 
 		context.theme.obtainStyledAttributes(attr, xmlStyleable, defStyleAttr, 0).apply {
 			try {
@@ -114,10 +117,6 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 				recycle()
 			}
 		}
-
-		layout = getLayout(xmlLayoutId)
-		addView(layout)
-		initViews(layout)
 	}
 
 	private fun updateFromTodo(todo: Todo?) {

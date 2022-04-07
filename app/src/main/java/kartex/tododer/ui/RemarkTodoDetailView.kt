@@ -19,6 +19,9 @@ open class RemarkTodoDetailView<Todo : IRemarkTodo> : TodoDetailView<Todo> {
 	override val xmlLayoutId: Int
 		get() = R.layout.detail_card_remark_todo
 
+	override val xmlStyleable: IntArray
+		get() = R.styleable.RemarkTodoDetailView
+
 	open var remark: String
 		get() {
 			bindTodo?.run {
@@ -41,6 +44,12 @@ open class RemarkTodoDetailView<Todo : IRemarkTodo> : TodoDetailView<Todo> {
 
 	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 	// </editor-fold>
+
+	override fun obtainStyles(typedArray: TypedArray) {
+		super.obtainStyles(typedArray)
+
+		remark = typedArray.getString(R.styleable.RemarkTodoDetailView_remark) ?: ""
+	}
 
 	override fun initViews(layout: ViewGroup) {
 		super.initViews(layout)

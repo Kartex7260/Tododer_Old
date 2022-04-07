@@ -11,4 +11,20 @@
         <attr name="title" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="RemarkTodoDetailView">
+        <attr name="remark" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="TreeTodoDetailView">
+        <attr name="todoListFilter" >
+            <flag name="byTitle" value="0" />
+            <flag name="byTime" value="1" />
+        </attr>
+        <attr name="sortReverse" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="TaskDetailView">
+        <attr name="check" format="boolean" />
+    </declare-styleable>
+
 </resources>
