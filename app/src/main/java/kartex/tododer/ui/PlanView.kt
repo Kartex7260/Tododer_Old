@@ -49,4 +49,12 @@ class PlanView : TodoView<IPlan> {
 			textViewRemark.text = todo.remark
 		}
 	}
+
+	companion object {
+		fun from(context: Context, plan: IPlan): PlanView {
+			val planView = PlanView(context)
+			planView.bindTodo = plan
+			return planView
+		}
+	}
 }

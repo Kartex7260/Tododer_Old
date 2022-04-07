@@ -33,4 +33,12 @@ class TaskView : TodoView<ITask> {
 	override fun onReadFromBind(todo: ITask) {
 		checkBox.isChecked = todo.check
 	}
+
+	companion object {
+		fun from(context: Context, task: ITask): TaskView {
+			val taskView = TaskView(context)
+			taskView.bindTodo = task
+			return taskView
+		}
+	}
 }

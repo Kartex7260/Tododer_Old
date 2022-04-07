@@ -13,6 +13,7 @@ import androidx.core.content.getSystemService
 import kartex.tododer.R
 import kartex.tododer.lib.extensions.toDpiF
 import kartex.tododer.lib.todo.ITodo
+import kartex.tododer.lib.todo.Todo
 import java.lang.NullPointerException
 
 open class TodoView<Todo : ITodo> : CardView {
@@ -132,6 +133,12 @@ open class TodoView<Todo : ITodo> : CardView {
 
 		const val TOP_MARGIN_DPI = 11
 		const val LEFT_MARGIN_DPI = 15
+
+		fun from(context: Context, todo: ITodo): TodoView<ITodo> {
+			val todoView = TodoView<ITodo>(context)
+			todoView.bindTodo = todo
+			return todoView
+		}
 
 		// <editor-fold desc="STATIC PRIVATE">
 		// </editor-fold>
