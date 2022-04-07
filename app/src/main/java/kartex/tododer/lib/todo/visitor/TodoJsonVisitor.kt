@@ -4,26 +4,19 @@ import kartex.tododer.lib.extensions.toDto
 import kartex.tododer.lib.extensions.toJson
 import kartex.tododer.lib.todo.IPlan
 import kartex.tododer.lib.todo.ITask
+import kartex.tododer.lib.todo.ITodo
+import kartex.tododer.lib.todo.dto.TodoDTO
 import java.lang.IllegalStateException
 
-class TodoJsonVisitor : ITodoVisitor {
+class TodoJsonVisitor : ITodoResultVisitor<String> {
 
-	private var _json: String? = null
-
-	val json: String
-		get() {
-			if (_json == null)
-				throw IllegalStateException("json is null")
-			return _json!!
-		}
-
-	override fun visitPlan(plan: IPlan) {
+	override fun visitPlan(plan: IPlan): String {
 		val dto = plan.toDto()
-		_json = dto.toJson()
+		return dto.toJson()
 	}
 
-	override fun visitTask(task: ITask) {
+	override fun visitTask(task: ITask): String {
 		val dto = task.toDto()
-		_json = dto.toJson()
+		return dto.toJson()
 	}
 }

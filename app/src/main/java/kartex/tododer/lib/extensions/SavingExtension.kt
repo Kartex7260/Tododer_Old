@@ -27,8 +27,7 @@ fun jsonToPlan(json: String, parent: ITodo? = null): Plan {
 
 fun ITodo.toJson(): String {
 	val jsonVisitor = TodoJsonVisitor()
-	visit(jsonVisitor)
-	return jsonVisitor.json
+	return resultVisit(jsonVisitor)
 }
 // </editor-fold>
 
