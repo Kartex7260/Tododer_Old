@@ -18,14 +18,19 @@ fun IPlan.computeAllProgress(progress: Progress) {
 
 fun ITreeTodo<ITask>.computeTaskProgress(progress: Progress) {
 	for (task in todos) {
-		task.checkProgress(progress)
-		task.computeTaskProgress(progress)
+		val isNotCheck = task.checkProgress(progress)
+		if (isNotCheck)
+			task.computeTaskProgress(progress)
 	}
 }
 
-fun ITask.checkProgress(progress: Progress) {
+fun ITask.checkProgress(progress: Progress): Boolean {
 	progress.all++
-	if (check) progress.complete++
+	if (check) {
+		progress.complete++
+		return false
+	}
+	return true
 }
 
 // <editor-fold desc="utils">

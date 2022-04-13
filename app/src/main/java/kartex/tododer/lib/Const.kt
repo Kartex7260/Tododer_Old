@@ -22,7 +22,13 @@ object Const {
 	}
 
 	object FragmentTags {
-		const val MAIN: String = "fragment_main"
+		const val PLAN_LIST: String = "fragment_plan_list"
+		const val DETAIL: String = "detail"
+	}
+
+	object ResultApiKeys {
+
+		const val CLOSE_DETAIL = "closeDetail"
 	}
 
 	val SORT: TodoSort = SortByTime.INST

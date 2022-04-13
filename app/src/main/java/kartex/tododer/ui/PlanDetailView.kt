@@ -27,6 +27,12 @@ class PlanDetailView : TreeTodoDetailView<ITask, IPlan> {
 	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 	// </editor-fold>
 
+	fun updateProgress() {
+		bindTodo?.also {
+			_progress.ratio = it.computeProgress()
+		}
+	}
+
 	override fun initViews(layout: ViewGroup) {
 		super.initViews(layout)
 

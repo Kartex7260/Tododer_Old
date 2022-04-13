@@ -75,15 +75,13 @@ open class TodoView<Todo : ITodo> : CardView {
 		requestLayout()
 	}
 
-	open fun bindContextMenu(activity: Activity) {
-		_buttonMore.setOnClickListener {
-			activity.openContextMenu(_buttonMore)
-		}
-	}
-
 	protected open fun initViews(layout: ViewGroup) {
 		textViewTitle = layout.findViewById(R.id.todoTitle)
 		_buttonMore = layout.findViewById(R.id.todoMoreButton)
+
+		_buttonMore.setOnClickListener {
+			it.showContextMenu()
+		}
 	}
 
 	protected open fun onReadFromBind(todo: Todo) {}

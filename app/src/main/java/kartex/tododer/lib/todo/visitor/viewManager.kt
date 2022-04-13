@@ -1,9 +1,7 @@
-package kartex.tododer.lib.extensions
+package kartex.tododer.lib.todo.visitor
 
 import android.content.Context
 import android.view.View
-import kartex.tododer.lib.todo.visitor.ITodoResultVisitor
-import kartex.tododer.lib.todo.visitor.ViewManagerVisitor
 
 private val managers: Map<Context, ViewManagerVisitor> = HashMap()
 

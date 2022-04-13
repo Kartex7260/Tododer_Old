@@ -21,24 +21,6 @@ class DetailStateSwitcher : StateSwitcher<DetailState>() {
 			return currentState.list
 		}
 
-	override var state: String
-		get() = super.state
-		set(value) {
-			super.state = value
-
-			for (keyState in states) {
-				if (keyState.key == value) {
-					val state = keyState.value
-					state.detail.isVisible = true
-					state.list.isVisible = true
-				} else {
-					val state = keyState.value
-					state.detail.isVisible = false
-					state.list.isVisible = false
-				}
-			}
-		}
-
 	companion object {
 
 		const val PLAN = "plan"

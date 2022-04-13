@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<kartex.tododer.ui.TodoListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
-    android:id="@+id/fragmentTodoList">
+    android:layout_width="match_parent">
 
-</kartex.tododer.ui.TodoListView>
+    <kartex.tododer.ui.TodoListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fragmentTodoList">
+    </kartex.tododer.ui.TodoListView>
+
+</androidx.core.widget.NestedScrollView>

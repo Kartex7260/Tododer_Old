@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.DIProvider
+import kartex.tododer.lib.extensions.createNewPlan
 import kartex.tododer.lib.extensions.createNewTask
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.extensions.toDpi
@@ -32,16 +33,36 @@ class LaunchActivity : AppCompatActivity(), DIAware {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.activity_launch)
 
+		fillDB()
+
+		finish()
+		val intent = Intent(this, MainActivity::class.java)
+		startActivity(intent)
+	}
+
+	private fun fillDB() {
+		if (db.count != 0)
+			return
+
 		db.createPlan("Test plan 1 (No remark)")
 		db.createPlan("Test plan 2 (Remark)").remark = "This is plan remark"
 
 		val plan0 = db.createPlan("Test plan 3 (0%)")
 		plan0.createNewTask()
-		val plan25 = db.createPlan("Test plan 4 (25%)")
-		plan25.createNewTask().check = true
-		plan25.createNewTask()
-		plan25.createNewTask()
-		plan25.createNewTask()
+		db.createPlan("Купить. Test plan 4 (25%)").apply {
+			createNewPlan("Для ребёнка").apply {
+				remark = "Не забыть бы"
+				createNewTask("Агуша")
+			}
+			createNewTask("Молоко").apply {
+				check = true
+				createNewTask("Лактоза")
+				createNewTask("Химоза")
+			}
+			createNewTask("Хлеба")
+			createNewTask("Яйца")
+			createNewTask("Лука")
+		}
 		val plan50 = db.createPlan("Test plan 5 (50%)")
 		plan50.createNewTask().check = true
 		plan50.createNewTask()
@@ -52,9 +73,5 @@ class LaunchActivity : AppCompatActivity(), DIAware {
 		plan75.createNewTask()
 		val plan100 = db.createPlan("Test plan 7 (100%)")
 		plan100.createNewTask().check = true
-
-		finish()
-		val intent = Intent(this, MainActivity::class.java)
-		startActivity(intent)
 	}
 }
