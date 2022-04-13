@@ -2,13 +2,22 @@ package kartex.tododer.lib.model
 
 import kartex.tododer.lib.todo.ITodo
 import savvy.toolkit.Event
+import savvy.toolkit.EventArgs
 
 class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 
+	// <editor-fold desc="FIELD`S">
+	private val eventLocker: Any = Any()
+	// </editor-fold>
+
 	// <editor-fold desc="PROP`S">
-	override val onAdd: Event<TodoDBEventArgs<Todo>> = Event(this)
-	override val onEdit: Event<TodoDBEventArgs<Todo>> = Event(this)
-	override val onRemove: Event<TodoDBEventArgs<Todo>> = Event(this)
+	override val onAdd: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onEdit: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onRemove: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onClear: Event<EventArgs> = Event(eventLocker)
+
+	override val count: Int
+		get() = db.count
 	// </editor-fold>
 
 	override fun iterator() = db.iterator()
@@ -16,8 +25,8 @@ class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 	override fun add(t: Todo) {
 		db.add(t)
 
-		val eventArgs = TodoDBEventArgs<Todo>(t)
-		onAdd.invoke(this, eventArgs)
+		val eventArgs = TodoDBEventArgs(t)
+		onAdd.invoke(eventLocker, eventArgs)
 	}
 
 	override fun get(func: (Todo) -> Boolean) = db.get(func)
@@ -27,8 +36,8 @@ class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 		if (result == null)
 			return result
 
-		val eventArgs = TodoDBEventArgs<Todo>(result)
-		onRemove.invoke(this, eventArgs)
+		val eventArgs = TodoDBEventArgs(result)
+		onRemove.invoke(eventLocker, eventArgs)
 		return result
 	}
 
@@ -37,8 +46,8 @@ class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 		if (result == null)
 			return result
 
-		val eventArgs = TodoDBEventArgs<Todo>(result)
-		onEdit.invoke(this, eventArgs)
+		val eventArgs = TodoDBEventArgs(result)
+		onEdit.invoke(eventLocker, eventArgs)
 		return result
 	}
 
@@ -49,9 +58,15 @@ class EventTodoDB<Todo : ITodo>(val db: ITodoDB<Todo>) : IEventTodoDB<Todo> {
 		if (result == null)
 			return result
 
-		val eventArgs = TodoDBEventArgs<Todo>(result)
-		onRemove.invoke(this, eventArgs)
+		val eventArgs = TodoDBEventArgs(result)
+		onRemove.invoke(eventLocker, eventArgs)
 		return result
 	}
 
+	override fun clear() {
+		db.clear()
+
+		val args = EventArgs()
+		onClear.invoke(eventLocker, args)
+	}
 }

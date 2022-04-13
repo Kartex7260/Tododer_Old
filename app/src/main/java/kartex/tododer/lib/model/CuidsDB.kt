@@ -14,6 +14,9 @@ class CuidsDB(private val dir: String) : IDataBase<String> {
 	private val gson = getGsonInstance()
 	private val cuids: IDataBase<String> = DataBase()
 
+	override val count: Int
+		get() = cuids.count
+
 	fun read() {
 		val buffer = Files.readAllBytes(manifestPath)
 		val json = buffer.toString(Charset.defaultCharset())
@@ -37,6 +40,11 @@ class CuidsDB(private val dir: String) : IDataBase<String> {
 		val removeResult = cuids.remove(func)
 		if (removeResult != null) saveFile()
 		return removeResult
+	}
+
+	override fun clear() {
+		cuids.clear()
+		saveFile()
 	}
 
 	override fun iterator(): Iterator<String> {

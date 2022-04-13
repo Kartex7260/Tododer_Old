@@ -4,6 +4,9 @@ open class DataBase<T> : IDataBase<T> {
 
 	protected val cache: MutableList<T> = ArrayList()
 
+	override val count: Int
+		get() = cache.count()
+
 	override fun iterator(): Iterator<T> {
 		return cache.iterator()
 	}
@@ -26,6 +29,10 @@ open class DataBase<T> : IDataBase<T> {
 			false
 		}
 		return t
+	}
+
+	override fun clear() {
+		cache.clear()
 	}
 
 }

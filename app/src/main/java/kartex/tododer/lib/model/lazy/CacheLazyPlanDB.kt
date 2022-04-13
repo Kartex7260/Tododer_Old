@@ -8,6 +8,9 @@ open class CacheLazyPlanDB : ITodoDB<LazyPlan> {
 
 	protected val cache: DataBase<LazyPlan> = DataBase()
 
+	override val count: Int
+		get() = cache.count
+
 	override fun iterator() = cache.iterator()
 
 	override fun add(t: LazyPlan) {
@@ -31,4 +34,7 @@ open class CacheLazyPlanDB : ITodoDB<LazyPlan> {
 
 	override fun remove(id: Int) = remove { it.id == id }
 
+	override fun clear() {
+		cache.clear()
+	}
 }

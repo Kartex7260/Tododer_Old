@@ -2,12 +2,19 @@ package kartex.tododer.lib.model
 
 import kartex.tododer.lib.todo.ITodo
 import savvy.toolkit.Event
+import savvy.toolkit.EventArgs
 
 class EventTodoList<Todo : ITodo>(val list: MutableList<Todo>) : IEventTodoDB<Todo> {
 
-	override val onAdd: Event<TodoDBEventArgs<Todo>> = Event(this)
-	override val onEdit: Event<TodoDBEventArgs<Todo>> = Event(this)
-	override val onRemove: Event<TodoDBEventArgs<Todo>> = Event(this)
+	private val eventLocker: Any = Any()
+
+	override val onAdd: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onEdit: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onRemove: Event<TodoDBEventArgs<Todo>> = Event(eventLocker)
+	override val onClear: Event<EventArgs> = Event(eventLocker)
+
+	override val count: Int
+		get() = list.count()
 
 	override fun iterator() = list.iterator()
 
@@ -15,7 +22,7 @@ class EventTodoList<Todo : ITodo>(val list: MutableList<Todo>) : IEventTodoDB<To
 		list.add(t)
 
 		val eventArgs = TodoDBEventArgs<Todo>(t)
-		onAdd.invoke(this, eventArgs)
+		onAdd.invoke(eventLocker, eventArgs)
 	}
 
 	override fun get(func: (Todo) -> Boolean) = list.firstOrNull(func)
@@ -33,7 +40,7 @@ class EventTodoList<Todo : ITodo>(val list: MutableList<Todo>) : IEventTodoDB<To
 			return result
 
 		val eventArgs = TodoDBEventArgs<Todo>(result!!)
-		onRemove.invoke(this, eventArgs)
+		onRemove.invoke(eventLocker, eventArgs)
 		return result
 	}
 
@@ -44,11 +51,18 @@ class EventTodoList<Todo : ITodo>(val list: MutableList<Todo>) : IEventTodoDB<To
 
 		func(found)
 		val eventArgs = TodoDBEventArgs<Todo>(found)
-		onEdit.invoke(this, eventArgs)
+		onEdit.invoke(eventLocker, eventArgs)
 		return found
 	}
 
 	override fun get(id: Int) = list.find { it.id == id }
 
 	override fun remove(id: Int) = remove { it.id == id }
+
+	override fun clear() {
+		list.clear()
+
+		val args = EventArgs()
+		onClear.invoke(eventLocker, args)
+	}
 }
