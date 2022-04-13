@@ -4,7 +4,7 @@ abstract class TreeTodo<Todo : ITodo>(id: Int, parent: ITodo? = null) : RemarkTo
 	override val todos: MutableList<Todo> = ArrayList()
 
 	override fun toString(): String {
-		return "${super.toString()}, tasks: ${todos.count()}"
+		return "${super.toString()}, todos: ${todos.count()}"
 	}
 
 	override fun iterator(): Iterator<ITodo> = todos.iterator()

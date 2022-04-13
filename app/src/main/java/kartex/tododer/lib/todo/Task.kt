@@ -25,4 +25,8 @@ open class Task(id: Int, parent: ITodo? = null) : TreeTodo<ITask>(id, parent), I
 			it.todos.add(taskClone)
 		}
 	}
+
+	override fun toString(): String {
+		return "${super.toString()} check: $check"
+	}
 }

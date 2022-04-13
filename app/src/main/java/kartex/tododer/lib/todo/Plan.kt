@@ -16,6 +16,10 @@ open class Plan(id: Int, parent: ITodo? = null) : TreeTodo<ITask>(id, parent), I
 
 	override fun <T> resultVisit(visitor: ITodoResultVisitor<T>) = visitor.visitPlan(this)
 
+	override fun toString(): String {
+		return "${super.toString()}, plans: ${plans.count()}"
+	}
+
 	override fun iterator(): Iterator<ITodo> {
 		return Iterators(plans, todos)
 	}
@@ -39,7 +43,7 @@ open class Plan(id: Int, parent: ITodo? = null) : TreeTodo<ITask>(id, parent), I
 	}
 
 
-	private class Iterators(
+	internal class Iterators(
 			iterable1: Iterable<ITodo>,
 			iterable2: Iterable<ITodo>
 			) : Iterator<ITodo> {
