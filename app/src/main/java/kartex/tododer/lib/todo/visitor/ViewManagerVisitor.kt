@@ -5,19 +5,20 @@ import kartex.tododer.lib.extensions.getCUID
 import kartex.tododer.lib.todo.IPlan
 import kartex.tododer.lib.todo.ITask
 import kartex.tododer.lib.todo.ITodo
+import kartex.tododer.ui.TodoView
 
 open class ViewManagerVisitor(
-	var viewVisitor: ITodoResultVisitor<out View>
-) : ITodoResultVisitor<ViewManagerVisitor.Companion.ViewUnit> {
+	val viewVisitor: ITodoResultVisitor<out View>
+) : ITodoResultVisitor<View> {
 
-	private val cachedViews: MutableMap<String, ViewUnit> = HashMap()
+	private val cachedViews: MutableMap<String, View> = HashMap()
 
 	open fun registry(todo: ITodo, view: View) {
 		val cuid = todo.getCUID()
 		if (cachedViews.containsKey(cuid))
 			return
 
-		cachedViews[cuid] = ViewUnit(view).apply { notFirst() }
+		cachedViews[cuid] = view
 	}
 
 	override fun visitPlan(plan: IPlan) = getOrCreate(plan)
@@ -25,29 +26,18 @@ open class ViewManagerVisitor(
 	override fun visitTask(task: ITask) = getOrCreate(task)
 
 	// <editor-fold desc="PRIVATE">
-	private fun getOrCreate(todo: ITodo): ViewUnit {
+	private fun getOrCreate(todo: ITodo): View {
 		val cuid = todo.getCUID()
-		return cachedViews[cuid].apply { this?.notFirst() } ?: return createView(cuid, todo)
+		return cachedViews[cuid]?.also {
+			val todoView = it as TodoView<ITodo>
+			todoView.bindTodo = todo
+		} ?: return createView(cuid, todo)
 	}
 
-	private fun createView(cuid: String, todo: ITodo): ViewUnit {
+	private fun createView(cuid: String, todo: ITodo): View {
 		val view = todo.resultVisit(viewVisitor)
-		return ViewUnit(view)
+		cachedViews[cuid] = view
+		return view
 	}
 	// </editor-fold>
-
-	companion object {
-
-		class ViewUnit(val view: View) {
-
-			private var _first = true
-
-			val isFirst: Boolean
-				get() = _first
-
-			fun notFirst() {
-				_first = false
-			}
-		}
-	}
 }

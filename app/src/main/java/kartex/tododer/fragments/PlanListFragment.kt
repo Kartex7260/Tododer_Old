@@ -13,6 +13,7 @@ import kartex.tododer.lib.Const
 import kartex.tododer.lib.DIProvider
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
+import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.ui.TodoListView
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
@@ -34,6 +35,10 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 	// State keys
 	private val STATE_KEY_SCROLL: String = "scroll"
 	// </editor-fold>
+
+	fun updateTodoCard(todo: ITodo) {
+		_root.updateTodoCard(todo)
+	}
 
 	// <editor-fold desc="FRAGMENT API">
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,9 +70,9 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 			hide(this@PlanListFragment)
 			setReorderingAllowed(true)
 			add(R.id.mainFragmentContainer, DetailFragment::class.java, null, Const.FragmentTags.DETAIL)
-			setFragmentResultListener(Const.ResultApiKeys.CLOSE_DETAIL) { _, _ ->
+			/*setFragmentResultListener(Const.ResultApiKeys.CLOSE_DETAIL) { _, _ ->
 				_root.updateAll()
-			}
+			}*/
 			addToBackStack(Const.BACK_STACK_MAIN)
 		}
 	}

@@ -67,7 +67,8 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		stack.onPop -= ::onPop
 		stack.clear()
 
-		setFragmentResult(Const.ResultApiKeys.CLOSE_DETAIL, bundleOf())
+		val planListFragment = parentFragmentManager.findFragmentByTag(Const.FragmentTags.PLAN_LIST) as PlanListFragment
+		planListFragment.updateTodoCard(diProvider.plan)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

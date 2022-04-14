@@ -1,20 +1,20 @@
 package kartex.tododer.ui
 
 import android.content.Context
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.widget.NestedScrollView
+import androidx.core.view.contains
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.IBindable
-import kartex.tododer.lib.todo.visitor.getViewManager
+import kartex.tododer.lib.extensions.removeFromParent
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.model.TodoDBEventArgs
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.visitor.CardViewVisitor
 import kartex.tododer.lib.todo.visitor.ViewManagerVisitor
+import kartex.tododer.lib.todo.visitor.getCardViewManager
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -68,6 +68,11 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	}
 	// </editor-fold>
 
+	open fun updateTodoCard(todo: ITodo) {
+		val view = todo.resultVisit(_viewManager) as TodoView<*>
+		view.updateFromBind()
+	}
+
 	open fun updateAll() {
 		if (_bind == null) return
 
@@ -84,6 +89,7 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	// <editor-fold desc="PROTECTED">
 	protected open fun showTodo(todo: Todo, func: ((View) -> Unit)? = null) {
 		val view = createView(todo, func)
+		view.removeFromParent()
 		addView(view, todoViewLayoutParams)
 	}
 
@@ -117,7 +123,7 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	// <editor-fold desc="PRIVATES">
 	private fun init() {
 		_cardVisitor = CardViewVisitor(context)
-		_viewManager = context.getViewManager(_cardVisitor)
+		_viewManager = context.getCardViewManager()
 
 		orientation = VERTICAL
 	}
@@ -134,11 +140,9 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	}
 
 	private fun createView(todo: ITodo, func: ((View) -> Unit)? = null): View {
-		val viewUnit = todo.resultVisit(_viewManager)
-		val view = viewUnit.view
+		val view = todo.resultVisit(_viewManager)
 		view.id = todo.id
-		if (viewUnit.isFirst)
-			func?.invoke(view)
+		func?.invoke(view)
 		view.setOnClickListener {
 			onClickCard(todo, view)
 		}
