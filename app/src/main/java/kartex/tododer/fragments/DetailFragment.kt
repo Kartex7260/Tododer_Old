@@ -5,10 +5,8 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.setFragmentResult
 import kartex.tododer.R
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.DIProvider
@@ -42,7 +40,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	// <editor-fold desc="VIEW`S">
 	private lateinit var _planDetail: PlanDetailView
 	private lateinit var _taskDetail: TaskDetailView
-	private lateinit var _rootDetail: LinearLayout
+	private lateinit var _rootLayout: LinearLayout
 
 	private lateinit var _planList: TodoListView<IPlan, IEventTodoDB<IPlan>>
 	private lateinit var _taskList: TaskListView
@@ -77,7 +75,10 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 		_planDetail = view.findViewById(R.id.fragmentDetailPlan)
 		_taskDetail = view.findViewById(R.id.fragmentDetailTask)
-		_rootDetail = view.findViewById(R.id.fragmentDetailRoot)
+		_planDetail.autoWriteToBind = true
+		_taskDetail.autoWriteToBind = true
+
+		_rootLayout = view.findViewById(R.id.fragmentDetailRoot)
 
 		_planList = TodoListView(context)
 		_taskList = TaskListView(context)
@@ -85,8 +86,8 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		_taskList.onClick += ::onClickTask
 		_taskList.onCheckChange += ::onCheckChange
 
-		_rootDetail.addView(_planList, _listLayoutParams)
-		_rootDetail.addView(_taskList, _listLayoutParams)
+		_rootLayout.addView(_planList, _listLayoutParams)
+		_rootLayout.addView(_taskList, _listLayoutParams)
 
 		val planState = DetailState(_planDetail, _planList)
 		val taskState = DetailState(_taskDetail, _taskList)

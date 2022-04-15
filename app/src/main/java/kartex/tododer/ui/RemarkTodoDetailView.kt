@@ -45,6 +45,8 @@ open class RemarkTodoDetailView<Todo : IRemarkTodo> : TodoDetailView<Todo> {
 	constructor(context: Context, attr: AttributeSet?, defStyleAttr: Int) : super(context, attr, defStyleAttr)
 	// </editor-fold>
 
+	// <editor-fold desc="RemarkTodoDetailView API">
+	// INIT`S
 	override fun obtainStyles(typedArray: TypedArray) {
 		super.obtainStyles(typedArray)
 
@@ -55,13 +57,18 @@ open class RemarkTodoDetailView<Todo : IRemarkTodo> : TodoDetailView<Todo> {
 		super.initViews(layout)
 
 		editTextRemark = layout.findViewById(R.id.detailRemark)
+		registerEditTextAWTB(editTextRemark)
+	}
+
+	// CALLBACKS`S
+	override fun onReadFromBind(todo: Todo) {
+		super.onReadFromBind(todo)
+		editTextRemark.text = toEditable(todo.remark)
 	}
 
 	override fun onWriteToBind(todo: Todo) {
+		super.onWriteToBind(todo)
 		todo.remark = editTextRemark.text.toString()
 	}
-
-	override fun onReadFromBind(todo: Todo) {
-		editTextRemark.text = Editable.Factory.getInstance().newEditable(todo.remark)
-	}
+	// </editor-fold>
 }

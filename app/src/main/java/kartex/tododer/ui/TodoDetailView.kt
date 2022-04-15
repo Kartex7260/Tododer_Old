@@ -3,13 +3,12 @@ package kartex.tododer.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
-import androidx.annotation.StyleableRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
@@ -20,6 +19,16 @@ import java.lang.NullPointerException
 open class TodoDetailView<Todo : ITodo> : FrameLayout {
 
 	// <editor-fold desc="FIELDS">
+	private val textWatcher = object : TextWatcher {
+		override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+		override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+		override fun afterTextChanged(s: Editable?) {
+			if (autoWriteToBind && writeFromUser) {
+				writeToBind()
+			}
+		}
+	}
+
 	// Поля видимых значений
 	private var _bindTodo: Todo? = null // Привязяный элемент
 
@@ -27,6 +36,8 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 	private lateinit var layout: ConstraintLayout
 	private lateinit var editTextTitle: EditText
 	private lateinit var deleteButton: AppCompatImageButton
+
+	private var writeFromUser: Boolean = true
 	// </editor-fold>
 
 	// <editor-fold desc="PROP`S">
@@ -40,7 +51,7 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 		get() = _bindTodo
 		set(value) {
 			_bindTodo = value
-			updateFromBind()
+			readFromBind()
 		}
 
 	open var title: String
@@ -56,6 +67,8 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 			}
 			editTextTitle.text = Editable.Factory.getInstance().newEditable(value)
 		}
+
+	open var autoWriteToBind: Boolean = false
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
@@ -72,37 +85,64 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 	}
 	// </editor-fold>
 
-	open fun writeData() {
-		val title = editTextTitle.text.toString()
-
-		if (_bindTodo != null) {
-			_bindTodo!!.title = title
-			onWriteToBind(_bindTodo!!)
+	open fun writeToBind() {
+		_bindTodo?.also {
+			onWriteToBind(it)
 		}
 	}
 
-	open fun updateFromBind() {
-		updateFromTodo(_bindTodo)
+	open fun readFromBind() {
+		_bindTodo?.also {
+			troughEditTextListener {
+				onReadFromBind(it)
+			}
+		}
 		invalidate()
 		requestLayout()
 	}
 
-	open fun setOnDeleteListener(l: View.OnClickListener) {
+	open fun setOnDeleteListener(l: OnClickListener) {
 		deleteButton.setOnClickListener(l)
 	}
 
+	open fun registerEditTextAWTB(editText: EditText) {
+		editText.addTextChangedListener(textWatcher)
+	}
+
+	// <editor-fold desc="PROTECTED">
+	// CALLBACK`S
+	protected open fun onReadFromBind(todo: Todo) {
+		editTextTitle.text = toEditable(todo.title)
+	}
+
+	protected open fun onWriteToBind(todo: Todo) {
+		val title = editTextTitle.text.toString()
+		todo.title = title
+	}
+
+	// INIT`S
 	protected open fun obtainStyles(typedArray: TypedArray) {
 		title = typedArray.getString(R.styleable.TodoDetailView_title) ?: ""
 	}
 
-	protected open fun onReadFromBind(todo: Todo) {}
-
-	protected open fun onWriteToBind(todo: Todo) {}
-
 	protected open fun initViews(layout: ViewGroup) {
 		editTextTitle = layout.findViewById(R.id.detailTodoTitle)
 		deleteButton = layout.findViewById(R.id.detailTodoDelete)
+
+		registerEditTextAWTB(editTextTitle)
 	}
+
+	// UTIL
+	protected open fun toEditable(source: CharSequence): Editable {
+		return Editable.Factory.getInstance().newEditable(source)
+	}
+
+	protected open fun troughEditTextListener(func: () -> Unit) {
+		writeFromUser = false
+		func()
+		writeFromUser = true
+	}
+	// </editor-fold>
 
 	// <editor-fold desc="PRIVATE">
 	private fun init(attr: AttributeSet?, defStyleAttr: Int) {
@@ -116,19 +156,6 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 			} finally {
 				recycle()
 			}
-		}
-	}
-
-	private fun updateFromTodo(todo: Todo?) {
-		if (todo == null) return
-
-		updateData(todo)
-		onReadFromBind(todo)
-	}
-
-	private fun updateData(todo: Todo) {
-		todo.apply {
-			editTextTitle.text = Editable.Factory.getInstance().newEditable(title)
 		}
 	}
 
