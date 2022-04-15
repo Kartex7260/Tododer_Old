@@ -62,7 +62,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detailRemark"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/filter_list_24" />
+        app:srcCompat="@drawable/sort_reverse_24" />
 
     <EditText
         android:id="@+id/detailRemark"

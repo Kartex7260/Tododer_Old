@@ -9,7 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import kartex.tododer.R
 import kartex.tododer.lib.Const
-import kartex.tododer.lib.DIProvider
+import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.StateSwitcher
 import kartex.tododer.lib.extensions.toPlanEventDB
 import kartex.tododer.lib.extensions.toTaskEventDB
@@ -30,7 +30,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 	// <editor-fold desc="FIELD`S">
 	override val di: DI by closestDI { requireContext() }
-	private val diProvider: DIProvider by instance()
+	private val mainDiBind: MainDIBind by instance()
 
 	private val states: DetailStateSwitcher = DetailStateSwitcher()
 
@@ -53,7 +53,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
-		stack = diProvider.stack
+		stack = mainDiBind.stack
 
 		stack.onPush += ::onPush
 		stack.onPop += ::onPop
@@ -66,7 +66,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		stack.clear()
 
 		val planListFragment = parentFragmentManager.findFragmentByTag(Const.FragmentTags.PLAN_LIST) as PlanListFragment
-		planListFragment.updateTodoCard(diProvider.plan)
+		planListFragment.resume()
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -98,7 +98,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		states.onStateChange += ::onStateChange
 		states.state = DetailStateSwitcher.PLAN
 
-		stack.push(diProvider.plan, arrayOf(PLAN))
+		stack.push(mainDiBind.plan, arrayOf(PLAN))
 	}
 
 	override fun onContextItemSelected(item: MenuItem): Boolean {

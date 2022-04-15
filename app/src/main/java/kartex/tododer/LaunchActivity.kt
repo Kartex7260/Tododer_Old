@@ -3,25 +3,14 @@ package kartex.tododer
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import kartex.tododer.lib.Const
-import kartex.tododer.lib.DIProvider
 import kartex.tododer.lib.extensions.createNewPlan
 import kartex.tododer.lib.extensions.createNewTask
 import kartex.tododer.lib.extensions.createPlan
-import kartex.tododer.lib.extensions.toDpi
-import kartex.tododer.lib.model.CachePlanDB
-import kartex.tododer.lib.model.EventTodoDB
 import kartex.tododer.lib.model.IEventTodoDB
-import kartex.tododer.lib.model.ITodoDB
 import kartex.tododer.lib.todo.IPlan
-import kartex.tododer.lib.todo.ITodo
-import kartex.tododer.ui.dialogs.SortDialogFragment
-import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
-import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 
 class LaunchActivity : AppCompatActivity(), DIAware {

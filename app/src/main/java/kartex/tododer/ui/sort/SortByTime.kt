@@ -3,7 +3,7 @@ package kartex.tododer.ui.sort
 import kartex.tododer.R
 import kartex.tododer.lib.todo.ITodo
 
-class SortByTime private constructor(reverse: Boolean = false) : TodoSort(1, R.drawable.filter_time_24, reverse) {
+class SortByTime private constructor(reverse: Boolean = false) : TodoSort(1, R.drawable.sort_time_24, reverse) {
 
 	override fun <T : ITodo> sort0(iterable: Iterable<T>) = iterable.sortedBy { it.time }
 

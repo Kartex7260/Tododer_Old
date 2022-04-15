@@ -4,7 +4,7 @@ import android.app.Application
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import kartex.tododer.lib.Const
-import kartex.tododer.lib.DIProvider
+import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.extensions.toDpi
 import kartex.tododer.lib.model.CachePlanDB
 import kartex.tododer.lib.model.EventTodoDB
@@ -39,7 +39,7 @@ class TododerApplication : Application(), DIAware {
 		}
 
 		bindSingleton { SortDialogFragment() }
-		bindSingleton { DIProvider() }
+		bindSingleton { MainDIBind() }
 	}
 
 	override fun onCreate() {

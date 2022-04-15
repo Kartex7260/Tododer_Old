@@ -8,17 +8,11 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageButton
 import kartex.tododer.R
 import kartex.tododer.lib.Const
-import kartex.tododer.lib.DIProvider
+import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.ITreeTodo
 import kartex.tododer.ui.dialogs.SortDialogFragment
-import kartex.tododer.ui.sort.SortByTime
 import kartex.tododer.ui.sort.TodoSort
-import org.kodein.di.DI
-import org.kodein.di.DIAware
-import org.kodein.di.android.closestDI
-import org.kodein.di.instance
-import kotlin.reflect.KProperty
 
 open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : RemarkTodoDetailView<Todo> {
 
@@ -28,7 +22,7 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 
 	private var _onChangeSort: OnChangeSort? = null
 
-	private var _diProvider: DIProvider? = null
+	private var _Main_diBind: MainDIBind? = null
 	// </editor-fold>
 
 	// <editor-fold desc="PROP`S">
@@ -40,22 +34,22 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 	override val xmlStyleable: IntArray
 		get() = R.styleable.TreeTodoDetailView
 
-	open var diProvider: DIProvider?
-		get() = _diProvider
+	open var mainDiBind: MainDIBind?
+		get() = _Main_diBind
 		set(value) {
-			_diProvider = value
+			_Main_diBind = value
 			updateRevButton()
 			updateRevButton()
 		}
 
 	open var sort: TodoSort?
-		get() = _diProvider?.sort
+		get() = _Main_diBind?.sort
 		set(value) {
 			if (value == null) {
-				_diProvider = null
+				_Main_diBind = null
 				return
 			}
-			_diProvider?.sort = value
+			_Main_diBind?.sort = value
 			_onChangeSort?.invoke(this, value)
 			updateSortButton()
 			updateRevButton()
@@ -99,38 +93,38 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 		}
 
 		buttonSortReverse.setOnClickListener {
-			if (_diProvider == null)
+			if (_Main_diBind == null)
 				return@setOnClickListener
-			_diProvider!!.sort = _diProvider!!.sort.asReverse()
-			_onChangeSort?.invoke(it, _diProvider!!.sort)
+			_Main_diBind!!.sort = _Main_diBind!!.sort.asReverse()
+			_onChangeSort?.invoke(it, _Main_diBind!!.sort)
 			updateRevButton()
 		}
 	}
 
 	fun callback(sortResult: SortDialogFragment.Companion.SortResult) {
-		if (_diProvider == null)
+		if (_Main_diBind == null)
 			return
-		val currentReverse = _diProvider!!.sort.reverse
+		val currentReverse = _Main_diBind!!.sort.reverse
 		val todoSort = sortResult.toTodoSort(currentReverse) ?: return
-		_diProvider!!.sort = todoSort
+		_Main_diBind!!.sort = todoSort
 		updateSortButton()
 		_onChangeSort?.invoke(this, todoSort)
 	}
 
 	// <editor-fold desc="PRIVATE">
 	private fun updateRevButton() {
-		if (_diProvider == null)
+		if (_Main_diBind == null)
 			return
-		if (_diProvider!!.sort.reverse)
+		if (_Main_diBind!!.sort.reverse)
 			buttonSortReverse.rotation = 180f
 		else
 			buttonSortReverse.rotation = 0f
 	}
 
 	private fun updateSortButton() {
-		if (_diProvider == null)
+		if (_Main_diBind == null)
 			return
-		buttonSortType.setImageResource(diProvider!!.sort.iconResId)
+		buttonSortType.setImageResource(mainDiBind!!.sort.iconResId)
 	}
 	// </editor-fold>
 }

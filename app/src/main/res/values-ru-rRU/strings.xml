@@ -12,4 +12,6 @@
     <string name="dialog_filter_by_title">По заголовку</string>
     <string name="dialog_filter_by_time">По времени</string>
     <string name="cancel">Отмена</string>
+    <string name="menu_filter">Фильтрация</string>
+    <string name="filter_reverse">Реверсировать</string>
 </resources>

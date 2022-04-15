@@ -16,6 +16,8 @@
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2275" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/more_vert_24.xml" value="0.1375" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/progress_view.xml" value="0.2305" />
+        <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/sort_reverse_24.xml" value="0.1375" />
+        <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/sort_reverse_24_rev.xml" value="0.1375" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/test.xml" value="0.1375" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/time_24.xml" value="0.1375" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/drawable/todo_view_background.xml" value="0.2" />
@@ -47,6 +49,9 @@
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/layout/sample_test.xml" value="0.2635416666666667" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/layout/sample_todo_card.xml" value="0.2635416666666667" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/menu/main.xml" value="0.2351851851851852" />
+        <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/menu/main_menu.xml" value="0.2765625" />
+        <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/menu/planListMenu.xml" value="0.2765625" />
+        <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/menu/plan_list_menu.xml" value="0.2765625" />
         <entry key="..\:/Users/kiril/Codes/AndroidStudio/Tododer/app/src/main/res/menu/todo_menu.xml" value="0.2765625" />
       </map>
     </option>
