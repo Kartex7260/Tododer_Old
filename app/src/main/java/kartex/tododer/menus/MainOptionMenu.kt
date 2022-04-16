@@ -1,11 +1,9 @@
 package kartex.tododer.menus
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.view.Menu
 import androidx.fragment.app.FragmentActivity
 import kartex.tododer.R
-import kartex.tododer.SettingsActivity
 import kartex.tododer.extensions.getColorOnPrimary
 import kartex.tododer.lib.MainDIBind
 import kartex.tododer.ui.dialogs.SortDialogFragment
@@ -37,8 +35,8 @@ class MainOptionMenu(val sortDialog: SortDialogFragment, val mainDiBind: MainDIB
 	private fun initItemSettings() {
 		menu.findItem(R.id.menuSettings).apply {
 			setOnMenuItemClickListener {
-				val intent = Intent(activity, SettingsActivity::class.java)
-				activity.startActivity(intent)
+				/*val intent = Intent(activity, SettingsActivity::class.java)
+				activity.startActivity(intent)*/
 				return@setOnMenuItemClickListener true
 			}
 		}

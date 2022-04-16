@@ -5,30 +5,20 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.Button
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.setFragmentResult
 import kartex.tododer.R
 import kartex.tododer.ui.sort.SortByTime
 import kartex.tododer.ui.sort.SortByTitle
 import kartex.tododer.ui.sort.TodoSort
 
-typealias OnCallback = (SortDialogFragment.Companion.SortResult) -> Unit
-
 class SortDialogFragment : DialogFragment {
 
-	// <editor-fold desc="FIELD`S"
-	private lateinit var buttonByTitle: Button
-	private lateinit var buttonByTime: Button
-
-	private lateinit var items: Array<String>
-
-	private var _result: SortResult = SortResult.Cancel
-	private var _callback: OnCallback? = null
+	// <editor-fold desc="FIELD">
+	private var _callback: OnCallback<SortResult>? = null
 	// </editor-fold>
 
-	// <editor-fold desc="PROP`S">
-	val result: SortResult
-		get() = _result
-	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
 	constructor() : super()
@@ -36,22 +26,12 @@ class SortDialogFragment : DialogFragment {
 	constructor(layoutRes: Int) : super(layoutRes)
 	// </editor-fold>
 
-	fun setCallback(func: OnCallback?) {
+	fun setCallback(func: OnCallback<SortResult>?) {
 		_callback = func
-	}
-
-	override fun onCreate(savedInstanceState: Bundle?) {
-		super.onCreate(savedInstanceState)
-
-		items = arrayOf(
-			getString(R.string.dialog_filter_by_title),
-			getString(R.string.dialog_filter_by_time)
-		)
 	}
 
 	@SuppressLint("DialogFragmentCallbacksDetector")
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-		_result = SortResult.Cancel
 		return activity?.let {
 			val builder = AlertDialog.Builder(context)
 			builder.setTitle(R.string.dialog_filter_title)

@@ -1,9 +1,7 @@
 package kartex.tododer.lib.extensions
 
 import kartex.tododer.lib.model.ITodoDB
-import kartex.tododer.lib.todo.IPlan
-import kartex.tododer.lib.todo.ITodo
-import kartex.tododer.lib.todo.Plan
+import kartex.tododer.lib.todo.*
 import java.util.*
 import kotlin.random.Random
 

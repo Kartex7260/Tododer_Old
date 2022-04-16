@@ -5,15 +5,10 @@
         <item>@string/dialog_filter_by_title</item>
         <item>@string/dialog_filter_by_time</item>
     </string-array>
-    <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
-    </string-array>
 
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
+    <string-array name="dialogTodoCreateItem">
+        <item>@string/dialog_todo_create_task</item>
+        <item>@string/dialog_todo_create_plan</item>
     </string-array>
 
 </resources>
