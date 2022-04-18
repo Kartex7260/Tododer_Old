@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 
 	override fun onBackPressed() {
 		val stack = mainDiBind.stack
-		if (stack.count() > 1) {
+		if (stack.count > 1) {
 			stack.pop()
 			return
 		}

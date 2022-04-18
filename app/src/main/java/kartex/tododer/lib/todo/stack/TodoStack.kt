@@ -9,6 +9,15 @@ class TodoStack<Todo : ITodo> {
 	private val stack: Stack<TodoArgs<Todo>> = Stack()
 	private val eventLocker: Any = Any()
 
+	val peek: Todo
+		get() = stack.peek().todo
+
+	val empty: Boolean
+		get() = stack.empty()
+
+	val count: Int
+		get() = stack.count()
+
 	val onPush: Event<TodoStackEventArgs<Todo>> = Event(eventLocker)
 	val onPop: Event<TodoStackEventArgs<Todo>> = Event(eventLocker)
 
@@ -27,12 +36,6 @@ class TodoStack<Todo : ITodo> {
 		onPop.invoke(eventLocker, eventArgs)
 		return result.todo
 	}
-
-	fun peek() = stack.peek().todo
-
-	fun empty() = stack.empty()
-
-	fun count() = stack.count()
 
 	fun search(any: Todo) = stack.search(TodoArgs(any))
 

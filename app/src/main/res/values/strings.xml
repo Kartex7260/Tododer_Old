@@ -15,8 +15,8 @@
     <string name="menu_filter">Filter</string>
     <string name="filter_reverse">Reverse</string>
     <string name="dialog_todo_create_title">Creating</string>
-    <string name="dialog_todo_create_task">Task</string>
-    <string name="dialog_todo_create_plan">Plan</string>
+    <string name="task">Task</string>
+    <string name="plan">Plan</string>
 
     <!-- Preference Titles -->
 

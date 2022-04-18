@@ -128,6 +128,19 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		activityBind?.apply {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
 			mainDiBind.optionMenu?.visiblePlanGroup(false)
+			mainToolbar.setupToolbar()
+		}
+	}
+
+	private fun androidx.appcompat.widget.Toolbar.setupToolbar() {
+		setTitle(R.string.plan)
+		setNavigationIcon(R.drawable.arrow_back)
+		setNavigationOnClickListener {
+			if (stack.count == 1) {
+				parentFragmentManager.popBackStack()
+			} else {
+				stack.pop()
+			}
 		}
 	}
 
@@ -208,8 +221,12 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 				_planList.isVisible = true
 
-				createPlan = { (stack.peek() as IPlan).createNewPlan() }
-				createTask = { (stack.peek() as IPlan).createNewTask() }
+				createPlan = { (stack.peek as IPlan).createNewPlan() }
+				createTask = { (stack.peek as IPlan).createNewTask() }
+
+				activityBind?.apply {
+					mainToolbar.setTitle(R.string.plan)
+				}
 			}
 			DetailStateSwitcher.TASK -> {
 				_taskDetail.isVisible = true
@@ -217,8 +234,12 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 				_planList.isVisible = false
 
-				createTask = { (stack.peek() as ITask).createNewTask() }
+				createTask = { (stack.peek as ITask).createNewTask() }
 				createPlan = null
+
+				activityBind?.apply {
+					mainToolbar.setTitle(R.string.task)
+				}
 			}
 		}
 	}

@@ -15,6 +15,6 @@
     <string name="menu_filter">Фильтрация</string>
     <string name="filter_reverse">Реверсировать</string>
     <string name="dialog_todo_create_title">Создание</string>
-    <string name="dialog_todo_create_task">Задача</string>
-    <string name="dialog_todo_create_plan">План</string>
+    <string name="task">Задача</string>
+    <string name="plan">План</string>
 </resources>

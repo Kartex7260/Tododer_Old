@@ -7,8 +7,8 @@
     </string-array>
 
     <string-array name="dialogTodoCreateItem">
-        <item>@string/dialog_todo_create_task</item>
-        <item>@string/dialog_todo_create_plan</item>
+        <item>@string/task</item>
+        <item>@string/plan</item>
     </string-array>
 
 </resources>

@@ -14,7 +14,6 @@ import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
-import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -41,7 +40,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		bind?.apply {
 			fragmentTodoList.updateAll()
 		}
-		setupCurrentFragmentBindState()
+		setupActivityBind()
 	}
 
 	// <editor-fold desc="FRAGMENT API">
@@ -52,7 +51,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 
 		val mainActivity = requireActivity() as MainActivity
 		activityBind = mainActivity.bind
-		setupCurrentFragmentBindState()
+		setupActivityBind()
 	}
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -112,12 +111,19 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		}
 	}
 
-	// <editor-fold desc="BINDING FUNCTIONS">
-	private fun setupCurrentFragmentBindState() {
+	// <editor-fold desc="FRAGMENT NAVIGATION SETUP">
+	private fun setupActivityBind() {
 		activityBind?.apply {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
 			mainDiBind.optionMenu?.visiblePlanGroup(true)
+			mainToolbar.setupToolbar()
 		}
+	}
+
+	private fun androidx.appcompat.widget.Toolbar.setupToolbar() {
+		setTitle(R.string.app_name)
+		navigationIcon = null
+		setNavigationOnClickListener {  }
 	}
 
 	private fun addButtonClick(view: View) {
