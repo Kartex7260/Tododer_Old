@@ -3,7 +3,7 @@ package kartex.tododer.ui.sort
 import kartex.tododer.R
 import kartex.tododer.lib.todo.ITodo
 
-class SortByTitle private constructor(reverse: Boolean = false) : TodoSort(0, R.drawable.filter_alphabet_24, reverse) {
+class SortByTitle private constructor(reverse: Boolean = false) : TodoSort(0, R.drawable.sort_alphabet_24, reverse) {
 
 	override fun <T : ITodo> sort0(iterable: Iterable<T>) = iterable.sortedBy { it.title }
 

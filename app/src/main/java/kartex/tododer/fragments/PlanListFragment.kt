@@ -14,6 +14,8 @@ import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
+import kartex.tododer.lib.todo.ITodo
+import kartex.tododer.ui.TodoView
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -30,15 +32,13 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 	private val mainDiBind: MainDIBind by instance()
 	private val db: IEventTodoDB<IPlan> by instance(Const.DITags.DB_MAIN)
 
-	private var firstResume: Boolean = true
-
 	// State keys
 	private val STATE_KEY_SCROLL: String = "scroll"
 	// </editor-fold>
 
 	fun resume() {
 		bind?.apply {
-			fragmentTodoList.updateAll()
+			listView.updateAll()
 		}
 		setupActivityBind()
 	}
@@ -63,8 +63,8 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		super.onViewCreated(view, savedInstanceState)
 
 		bind?.apply {
-			fragmentTodoList.bind = db
-			fragmentTodoList.onClick += ::onClick
+			listView.bind = db
+			listView.onClick += ::onClick
 		}
 
 		savedInstanceState?.apply {
@@ -77,8 +77,8 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 	override fun onDestroyView() {
 		super.onDestroyView()
 		bind?.apply {
-			fragmentTodoList.bind = null
-			fragmentTodoList.onClick -= ::onClick
+			listView.bind = null
+			listView.onClick -= ::onClick
 			bind = null
 		}
 	}
@@ -115,7 +115,10 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 	private fun setupActivityBind() {
 		activityBind?.apply {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
-			mainDiBind.optionMenu?.visiblePlanGroup(true)
+			mainDiBind.optionMenu?.apply {
+				visiblePlanGroup(true)
+				fixColor()
+			}
 			mainToolbar.setupToolbar()
 		}
 	}

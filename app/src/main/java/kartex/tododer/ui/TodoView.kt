@@ -50,8 +50,7 @@ open class TodoView<Todo : ITodo> : CardView {
 			invalidate()
 		}
 
-	val buttonMore: AppCompatImageButton
-		get() = _buttonMore
+	var onMenuDeleteClick: ((MenuItem) -> Boolean)? = null
 
 	// </editor-fold>
 
@@ -90,6 +89,11 @@ open class TodoView<Todo : ITodo> : CardView {
 		super.onCreateContextMenu(menu)
 		val menuInflater = MenuInflater(context)
 		menuInflater.inflate(R.menu.todo_menu, menu)
+		menu?.apply {
+			findItem(R.id.todoMenuDelete).apply {
+				setOnMenuItemClickListener { onMenuDeleteClick?.invoke(it) ?: true }
+			}
+		}
 	}
 
 

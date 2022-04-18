@@ -7,7 +7,7 @@
     <kartex.tododer.ui.TodoListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragmentTodoList">
+        android:id="@+id/list_view">
     </kartex.tododer.ui.TodoListView>
 
 </androidx.core.widget.NestedScrollView>

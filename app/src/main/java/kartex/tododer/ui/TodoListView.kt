@@ -2,6 +2,7 @@ package kartex.tododer.ui
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -28,7 +29,6 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	override val di: DI by closestDI()
 	private val todoViewLayoutParams: ViewGroup.LayoutParams by instance(Const.DITags.LP_MAIN_CARD)
 
-	private lateinit var _cardVisitor: CardViewVisitor
 	private lateinit var _viewManager: ViewManagerVisitor
 
 	private var _bind: DB? = null
@@ -52,6 +52,8 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 		}
 
 	val onClick: Event<TodoViewOnClickEventArgs> = Event(_eventLocker)
+
+	var onMenuDeleteClick: ((DB, Todo, MenuItem, TodoView<Todo>) -> Boolean)? = null
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
@@ -122,7 +124,6 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 
 	// <editor-fold desc="PRIVATES">
 	private fun init() {
-		_cardVisitor = CardViewVisitor(context)
 		_viewManager = context.getCardViewManager()
 
 		orientation = VERTICAL
@@ -139,12 +140,16 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 		onClick.invoke(_eventLocker, eventArgs)
 	}
 
-	private fun createView(todo: ITodo, func: ((View) -> Unit)? = null): View {
-		val view = todo.resultVisit(_viewManager)
+	private fun createView(todo: Todo, func: ((View) -> Unit)? = null): View {
+		val view = todo.resultVisit(_viewManager) as TodoView<Todo>
 		view.id = todo.id
 		func?.invoke(view)
 		view.setOnClickListener {
 			onClickCard(todo, view)
+		}
+		view.onMenuDeleteClick = {
+			_bind?.remove(todo.id)
+			onMenuDeleteClick?.invoke(_bind!!, todo, it, view) ?: true
 		}
 		return view
 	}

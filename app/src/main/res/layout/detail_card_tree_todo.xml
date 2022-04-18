@@ -46,7 +46,7 @@
         app:layout_constraintEnd_toStartOf="@+id/detailTodoDelete"
         app:layout_constraintTop_toBottomOf="@+id/detailRemark"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/filter_alphabet_24" />
+        app:srcCompat="@drawable/sort_alphabet_24" />
 
     <ImageButton
         android:id="@+id/detailTreeSortReverse"

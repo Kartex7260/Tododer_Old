@@ -10,7 +10,7 @@
     <string name="detail_screen_remark">Remark</string>
     <string name="dialog_filter_title">Filter</string>
     <string name="dialog_filter_by_title">By Title</string>
-    <string name="dialog_filter_by_time">By time</string>
+    <string name="dialog_filter_by_time">By Time</string>
     <string name="cancel">Cancel</string>
     <string name="menu_filter">Filter</string>
     <string name="filter_reverse">Reverse</string>

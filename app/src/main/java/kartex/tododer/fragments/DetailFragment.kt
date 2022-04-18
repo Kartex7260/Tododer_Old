@@ -22,6 +22,7 @@ import kartex.tododer.lib.todo.*
 import kartex.tododer.lib.todo.stack.TodoStack
 import kartex.tododer.lib.todo.stack.TodoStackEventArgs
 import kartex.tododer.ui.*
+import kartex.tododer.ui.dialogs.SortDialogFragment
 import kartex.tododer.ui.dialogs.TodoCreateDialogFragment
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
@@ -91,13 +92,35 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		_planDetail.autoWriteToBind = true
 		_taskDetail.autoWriteToBind = true
 
+		val sortFun = fun (): SortDialogFragment {
+			val sortDialog = SortDialogFragment()
+			sortDialog.show(parentFragmentManager, null)
+			return sortDialog
+		}
+
+		_taskDetail.mainDiBind = mainDiBind
+		_taskDetail.sortFunc = sortFun
+
+		_planDetail.mainDiBind = mainDiBind
+		_planDetail.sortFunc = sortFun
+
 		_rootLayout = view.findViewById(R.id.fragmentDetailRoot)
 
 		_planList = TodoListView(context)
 		_taskList = TaskListView(context)
 		_planList.onClick += ::onClickPlan
 		_taskList.onClick += ::onClickTask
-		_taskList.onCheckChange += ::onCheckChange
+		_taskList.onCheckChange += fun (_: Any?, _: TaskView.Companion.CheckChangeEventArgs) {
+			_planDetail.updateProgress()
+		}
+		_planList.onMenuDeleteClick = { _, _, _, _ ->
+			_planDetail.updateProgress()
+			true
+		}
+		_taskList.onMenuDeleteClick = { _, _, _, _ ->
+			_planDetail.updateProgress()
+			true
+		}
 
 		_rootLayout.addView(_planList, _listLayoutParams)
 		_rootLayout.addView(_taskList, _listLayoutParams)
@@ -209,10 +232,6 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	// </editor-fold>
 
 	// <editor-fold desc="CHANGES">
-	private fun onCheckChange(any: Any?, args: TaskView.Companion.CheckChangeEventArgs) {
-		_planDetail.updateProgress()
-	}
-
 	private fun onStateChange(any: Any?, args: StateSwitcher.Companion.StateChangeEventArgs) {
 		when (args.state) {
 			DetailStateSwitcher.PLAN -> {

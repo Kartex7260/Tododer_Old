@@ -12,6 +12,12 @@ private val attrsIds: IntArray = intArrayOf(
 )
 private var colorSet: ColorSet? = null
 
+fun Context.getColorPrimary(): Int {
+	if (colorSet == null)
+		initColorSet()
+	return colorSet!!.colorPrimary
+}
+
 fun Context.getColorOnPrimary(): Int {
 	if (colorSet == null)
 		initColorSet()
