@@ -305,20 +305,20 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	private fun showPlanDetail(todoStackElement: TodoStackElement, recompute: Boolean = false) {
 		val plan = todoStackElement.todo as IPlan
 		_planDetail.apply {
-			bindTodo = plan
 			sortable = todoStackElement
+			bindTodo = plan
 		}
 		_taskDetail.apply {
-			bindTodo = null
 			sortable = null
+			bindTodo = null
 		}
 		_planList.apply {
-			bind = plan.plans.toPlanEventDB()
 			sortable = todoStackElement
+			bind = plan.plans.toPlanEventDB()
 		}
 		_taskList.apply {
-			bind = plan.todos.toTaskEventDB()
 			sortable = todoStackElement
+			bind = plan.todos.toTaskEventDB()
 		}
 		if (recompute)
 			_planList.updateAll()
@@ -327,20 +327,20 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	private fun showTaskDetail(todoStackElement: TodoStackElement, recompute: Boolean = false) {
 		val task = todoStackElement.todo as ITask
 		_taskDetail.apply {
-			bindTodo = task
 			sortable = todoStackElement
+			bindTodo = task
 		}
 		_planDetail.apply {
-			bindTodo = null
 			sortable = null
+			bindTodo = null
 		}
 		_taskList.apply {
-			bind = task.todos.toTaskEventDB()
 			sortable = todoStackElement
+			bind = task.todos.toTaskEventDB()
 		}
 		_planList.apply {
-			bind = null
 			sortable = null
+			bind = null
 		}
 	}
 	// </editor-fold>
