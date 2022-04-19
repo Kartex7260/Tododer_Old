@@ -6,16 +6,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.core.view.contains
 import kartex.tododer.lib.Const
-import kartex.tododer.lib.DIProviderEventArgs
+import kartex.tododer.lib.ValueEventArgs
 import kartex.tododer.lib.IBindable
 import kartex.tododer.lib.ISortable
 import kartex.tododer.lib.extensions.removeFromParent
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.model.TodoDBEventArgs
 import kartex.tododer.lib.todo.ITodo
-import kartex.tododer.lib.todo.visitor.CardViewVisitor
 import kartex.tododer.lib.todo.visitor.ViewManagerVisitor
 import kartex.tododer.lib.todo.visitor.getCardViewManager
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
@@ -141,7 +139,7 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	// </editor-fold>
 
 	// <editor-fold desc="PRIVATES">
-	private fun onChangeSort(any: Any?, args: DIProviderEventArgs<TodoSort>) {
+	private fun onChangeSort(any: Any?, args: ValueEventArgs<TodoSort>) {
 		updateAll()
 	}
 

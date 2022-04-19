@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity(), DIAware {
 		}
 
 		_bind.mainToolbar.inflateMenu(R.menu.plan_list_menu)
-		mainOptionMenu = MainOptionMenu(sortDialog, mainDiBind, this, _bind.mainToolbar.menu)
+		mainOptionMenu = MainOptionMenu(sortDialog, this, _bind.mainToolbar.menu)
 		mainOptionMenu.initItems()
 		mainDiBind.optionMenu = mainOptionMenu
 	}

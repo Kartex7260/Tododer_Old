@@ -10,18 +10,22 @@ import kartex.tododer.R
 import kartex.tododer.databinding.ActivityMainBinding
 import kartex.tododer.databinding.FragmentTodoListBinding
 import kartex.tododer.lib.Const
+import kartex.tododer.lib.ISortable
 import kartex.tododer.lib.MainDIBind
+import kartex.tododer.lib.ValueEventArgs
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
+import kartex.tododer.ui.sort.TodoSort
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
 import org.kodein.di.instance
+import savvy.toolkit.Event
 
-class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
+class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware, ISortable {
 
 	// <editor-fold desc="FIELD`S">
 	private var bind: FragmentTodoListBinding? = null
@@ -33,6 +37,22 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 
 	// State keys
 	private val STATE_KEY_SCROLL: String = "scroll"
+
+	private val eventLocker = Any()
+	private var _sort: TodoSort = Const.SORT
+	// </editor-fold>
+
+	// <editor-fold desc="PROP`S">
+	override var sort: TodoSort
+		get() = _sort
+		set(value) {
+			_sort = value
+
+			val args = ValueEventArgs(_sort)
+			onChangeSort.invoke(eventLocker, args)
+		}
+
+	override val onChangeSort: Event<ValueEventArgs<TodoSort>> = Event(eventLocker)
 	// </editor-fold>
 
 	fun resume() {
@@ -72,7 +92,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		bind?.apply {
 			listView.bind = db
 			listView.onClick += ::onClick
-			listView.sortable = mainDiBind
+			listView.sortable = this@PlanListFragment
 		}
 
 		savedInstanceState?.apply {
@@ -121,6 +141,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
 			mainDiBind.optionMenu?.apply {
 				visiblePlanGroup(true)
+				sortable = this@PlanListFragment
 				resume()
 			}
 			mainToolbar.setupToolbar()

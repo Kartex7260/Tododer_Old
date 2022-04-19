@@ -4,7 +4,7 @@ import kartex.tododer.lib.todo.ITodo
 import savvy.toolkit.Event
 import java.util.*
 
-class TodoStack<Todo : ITodo> {
+class TodoStack<Todo> {
 
 	private val stack: Stack<TodoArgs<Todo>> = Stack()
 	private val eventLocker: Any = Any()
@@ -41,7 +41,7 @@ class TodoStack<Todo : ITodo> {
 
 	fun clear() = stack.clear()
 
-	private class TodoArgs<Todo : ITodo>(val todo: Todo, val args: Array<Any>? = null) {
+	private class TodoArgs<Todo>(val todo: Todo, val args: Array<Any>? = null) {
 		override fun equals(other: Any?): Boolean {
 			if (other == null || other !is TodoArgs<*>)
 				return false

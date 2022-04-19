@@ -5,6 +5,6 @@ import savvy.toolkit.Event
 
 interface ISortable {
 
-	val onChangeSort: Event<DIProviderEventArgs<TodoSort>>
+	val onChangeSort: Event<ValueEventArgs<TodoSort>>
 	var sort: TodoSort
 }

@@ -13,10 +13,8 @@ import kartex.tododer.databinding.ActivityMainBinding
 import kartex.tododer.lib.Const
 import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.StateSwitcher
-import kartex.tododer.lib.extensions.createNewPlan
-import kartex.tododer.lib.extensions.createNewTask
-import kartex.tododer.lib.extensions.toPlanEventDB
-import kartex.tododer.lib.extensions.toTaskEventDB
+import kartex.tododer.lib.TodoStackElement
+import kartex.tododer.lib.extensions.*
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.*
 import kartex.tododer.lib.todo.stack.TodoStack
@@ -39,7 +37,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 	private val states: DetailStateSwitcher = DetailStateSwitcher()
 
-	private lateinit var stack: TodoStack<ITodo>
+	private lateinit var stack: TodoStack<TodoStackElement>
 
 	private var createTask: (() -> Task)? = null
 	private var createPlan: (() -> Plan)? = null
@@ -95,7 +93,6 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 		_planDetail = view.findViewById<PlanDetailView?>(R.id.fragmentDetailPlan).apply {
 			autoWriteToBind = true
-			sortable = mainDiBind
 			sortFunc = sortFun
 			deleteListener = fun (args: TodoDetailView.Companion.DeleteEventArgs<IPlan>) {
 				if (args.bind == null)
@@ -109,7 +106,6 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		}
 		_taskDetail = view.findViewById<TaskDetailView?>(R.id.fragmentDetailTask).apply {
 			autoWriteToBind = true
-			sortable = mainDiBind
 			sortFunc = sortFun
 			deleteListener = fun (args: TodoDetailView.Companion.DeleteEventArgs<ITask>) {
 				if (args.bind == null)
@@ -129,7 +125,6 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 				_planDetail.updateProgress()
 				true
 			}
-			sortable = mainDiBind
 		}
 		_taskList = TaskListView(context).apply {
 			onClick += ::onClickTask
@@ -140,7 +135,6 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 				_planDetail.updateProgress()
 				true
 			}
-			sortable = mainDiBind
 		}
 
 
@@ -156,7 +150,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		states.onStateChange += ::onStateChange
 		states.state = DetailStateSwitcher.PLAN
 
-		stack.push(mainDiBind.plan, arrayOf(PLAN))
+		pushPlan(mainDiBind.plan)
 	}
 
 	override fun onContextItemSelected(item: MenuItem): Boolean {
@@ -194,7 +188,10 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	private fun setupActivityBind() {
 		activityBind?.apply {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
-			mainDiBind.optionMenu?.visiblePlanGroup(false)
+			mainDiBind.optionMenu?.apply {
+				visiblePlanGroup(false)
+				sortable = null
+			}
 			mainToolbar.setupToolbar()
 		}
 	}
@@ -210,18 +207,18 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	private fun addButtonClick(view: View) {
 		if (states.state == DetailStateSwitcher.TASK) {
 			val task = createTask?.invoke() ?: return
-			stack.push(task, arrayOf(TASK))
+			pushTask(task)
 		} else if (states.state == DetailStateSwitcher.PLAN) {
 			val createTodoDialog = TodoCreateDialogFragment()
 			createTodoDialog.setCallback {
 				when (it) {
 					TodoCreateDialogFragment.CREATE_TASK -> {
 						val task = createTask?.invoke() ?: return@setCallback
-						stack.push(task, arrayOf(TASK))
+						pushTask(task)
 					}
 					TodoCreateDialogFragment.CREATE_PLAN -> {
 						val plan = createPlan?.invoke() ?: return@setCallback
-						stack.push(plan, arrayOf(PLAN))
+						pushPlan(plan)
 					}
 				}
 			}
@@ -230,32 +227,32 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	}
 
 	// <editor-fold desc="STACK EVENTS">
-	private fun onPush(any: Any?, args: TodoStackEventArgs<ITodo>) {
+	private fun onPush(any: Any?, args: TodoStackEventArgs<TodoStackElement>) {
 		if (args.args == null)
 			return
 		when (args.args[0]) {
 			PLAN -> {
-				showPlanDetail(args.todo as IPlan)
+				showPlanDetail(args.todo)
 			}
 			TASK -> {
 				if (states.state == DetailStateSwitcher.PLAN)
 					states.state = DetailStateSwitcher.TASK
-				showTaskDetail(args.todo as ITask)
+				showTaskDetail(args.todo)
 			}
 		}
 	}
 
-	private fun onPop(any: Any?, args: TodoStackEventArgs<ITodo>) {
+	private fun onPop(any: Any?, args: TodoStackEventArgs<TodoStackElement>) {
 		if (args.args == null)
 			return
 		when (args.args[0]) {
 			PLAN -> {
 				if (states.state == DetailStateSwitcher.TASK)
 					states.state = DetailStateSwitcher.PLAN
-				showPlanDetail(args.todo as IPlan, true)
+				showPlanDetail(args.todo, true)
 			}
 			TASK -> {
-				showTaskDetail(args.todo as ITask, true)
+				showTaskDetail(args.todo, true)
 			}
 		}
 	}
@@ -263,11 +260,11 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 	// <editor-fold desc="TODOS CLICK"
 	private fun onClickPlan(any: Any?, args: TodoViewOnClickEventArgs) {
-		stack.push(args.todo, arrayOf(PLAN))
+		pushPlan(args.todo as IPlan)
 	}
 
 	private fun onClickTask(any: Any?, args: TodoViewOnClickEventArgs) {
-		stack.push(args.todo, arrayOf(TASK))
+		pushTask(args.todo as ITask)
 	}
 	// </editor-fold>
 
@@ -280,8 +277,8 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 				_planList.isVisible = true
 
-				createPlan = { (stack.peek as IPlan).createNewPlan() }
-				createTask = { (stack.peek as IPlan).createNewTask() }
+				createPlan = { (stack.peek.todo as IPlan).createNewPlan() }
+				createTask = { (stack.peek.todo as IPlan).createNewTask() }
 
 				activityBind?.apply {
 					mainToolbar.setTitle(R.string.plan)
@@ -293,7 +290,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 				_planList.isVisible = false
 
-				createTask = { (stack.peek as ITask).createNewTask() }
+				createTask = { (stack.peek.todo as ITask).createNewTask() }
 				createPlan = null
 
 				activityBind?.apply {
@@ -305,19 +302,58 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 	// </editor-fold>
 
 	// <editor-fold desc="SHOWING">
-	private fun showPlanDetail(plan: IPlan, recompute: Boolean = false) {
-		_planDetail.bindTodo = plan
-		_planList.bind = plan.plans.toPlanEventDB()
-		_taskList.bind = plan.todos.toTaskEventDB()
+	private fun showPlanDetail(todoStackElement: TodoStackElement, recompute: Boolean = false) {
+		val plan = todoStackElement.todo as IPlan
+		_planDetail.apply {
+			bindTodo = plan
+			sortable = todoStackElement
+		}
+		_taskDetail.apply {
+			bindTodo = null
+			sortable = null
+		}
+		_planList.apply {
+			bind = plan.plans.toPlanEventDB()
+			sortable = todoStackElement
+		}
+		_taskList.apply {
+			bind = plan.todos.toTaskEventDB()
+			sortable = todoStackElement
+		}
 		if (recompute)
 			_planList.updateAll()
 	}
 
-	private fun showTaskDetail(task: ITask, recompute: Boolean = false) {
-		_taskDetail.bindTodo = task
-		_taskList.bind = task.todos.toTaskEventDB()
+	private fun showTaskDetail(todoStackElement: TodoStackElement, recompute: Boolean = false) {
+		val task = todoStackElement.todo as ITask
+		_taskDetail.apply {
+			bindTodo = task
+			sortable = todoStackElement
+		}
+		_planDetail.apply {
+			bindTodo = null
+			sortable = null
+		}
+		_taskList.apply {
+			bind = task.todos.toTaskEventDB()
+			sortable = todoStackElement
+		}
+		_planList.apply {
+			bind = null
+			sortable = null
+		}
 	}
 	// </editor-fold>
+
+	private fun pushPlan(plan: IPlan) {
+		val todoStackElement = plan.getStackElement()
+		stack.push(todoStackElement, arrayOf(PLAN))
+	}
+
+	private fun pushTask(task: ITask) {
+		val todoStackElement = task.getStackElement()
+		stack.push(todoStackElement, arrayOf(TASK))
+	}
 	// </editor-fold>
 
 	companion object {
