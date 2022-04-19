@@ -17,8 +17,8 @@ class SortDialogFragment : DialogFragment {
 
 	// <editor-fold desc="FIELD">
 	private var _callback: OnCallback<SortResult>? = null
+	private var _cancelCallback: OnCallback<Unit>? = null
 	// </editor-fold>
-
 
 	// <editor-fold desc="CTOR`S">
 	constructor() : super()
@@ -28,6 +28,10 @@ class SortDialogFragment : DialogFragment {
 
 	fun setCallback(func: OnCallback<SortResult>?) {
 		_callback = func
+	}
+
+	fun setCancelCallback(func: OnCallback<Unit>?) {
+		_cancelCallback = func
 	}
 
 	@SuppressLint("DialogFragmentCallbacksDetector")
@@ -42,7 +46,7 @@ class SortDialogFragment : DialogFragment {
 					1 -> _callback?.invoke(SortResult.ByTime)
 				}
 			}
-			builder.setNegativeButton(R.string.cancel, null)
+			builder.setNegativeButton(R.string.cancel) { _, _ -> _cancelCallback?.invoke(Unit) }
 			builder.create()
 		} ?: throw Exception("Dialog is null")
 	}

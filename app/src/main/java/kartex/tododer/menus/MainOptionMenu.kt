@@ -3,6 +3,7 @@ package kartex.tododer.menus
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.FragmentActivity
 import kartex.tododer.R
 import kartex.tododer.extensions.getColorOnPrimary
@@ -25,10 +26,11 @@ class MainOptionMenu(val sortDialog: SortDialogFragment, val mainDiBind: MainDIB
 		}
 	}
 
-	fun fixColor() {
+	fun resume() {
 		menu.findItem(R.id.menuSort).apply {
 			icon = mainDiBind.sort.getDrawable(activity).colorOnPrimary()
 		}
+		updateIconReverse()
 	}
 
 	override fun initItems() {
@@ -50,23 +52,25 @@ class MainOptionMenu(val sortDialog: SortDialogFragment, val mainDiBind: MainDIB
 	}
 
 	@SuppressLint("UseCompatLoadingForDrawables")
+	private fun updateIconReverse() {
+		val iconNormal = activity.getDrawable(R.drawable.toolbar_sort_reverse_24)
+		val iconReverse = activity.getDrawable(R.drawable.toolbar_sort_reverse_24_rev)
+		menu.findItem(R.id.menuReverse).icon = if (mainDiBind.sort.reverse)
+			iconReverse
+		else
+			iconNormal
+	}
+
+	@SuppressLint("UseCompatLoadingForDrawables")
 	private fun initItemReverse() {
 		menu.findItem(R.id.menuReverse).apply {
-			val iconNormal = activity.getDrawable(R.drawable.toolbar_sort_reverse_24)
-			val iconReverse = activity.getDrawable(R.drawable.toolbar_sort_reverse_24_rev)
-
-			fun updateIcon() {
-				icon = if (mainDiBind.sort.reverse)
-					iconReverse
-				else
-					iconNormal
-			}
-
-			updateIcon()
+			updateIconReverse()
 
 			setOnMenuItemClickListener {
+				it.isEnabled = false
 				mainDiBind.sort = mainDiBind.sort.asReverse()
-				updateIcon()
+				updateIconReverse()
+				it.isEnabled = true
 				return@setOnMenuItemClickListener true
 			}
 		}
@@ -76,13 +80,15 @@ class MainOptionMenu(val sortDialog: SortDialogFragment, val mainDiBind: MainDIB
 	private fun initItemSort() {
 		menu.findItem(R.id.menuSort).apply {
 			icon = mainDiBind.sort.getDrawable(activity).colorOnPrimary()
-			setOnMenuItemClickListener {
+			setOnMenuItemClickListener { item ->
 				sortDialog.setCallback {
 					val sortResult = it.toTodoSort(mainDiBind.sort.reverse) ?: return@setCallback
 					mainDiBind.sort = sortResult
 					icon = sortResult.getDrawable(activity).colorOnPrimary()
 				}
+				item.isEnabled = false
 				sortDialog.show(activity.supportFragmentManager, null)
+				item.isEnabled = true
 				return@setOnMenuItemClickListener true
 			}
 		}

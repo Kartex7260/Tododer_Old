@@ -106,21 +106,26 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 
 		_rootLayout = view.findViewById(R.id.fragmentDetailRoot)
 
-		_planList = TodoListView(context)
-		_taskList = TaskListView(context)
-		_planList.onClick += ::onClickPlan
-		_taskList.onClick += ::onClickTask
-		_taskList.onCheckChange += fun (_: Any?, _: TaskView.Companion.CheckChangeEventArgs) {
-			_planDetail.updateProgress()
+		_planList = TodoListView<IPlan, IEventTodoDB<IPlan>>(context).apply {
+			onClick += ::onClickPlan
+			onMenuDeleteClick = { _, _, _, _ ->
+				_planDetail.updateProgress()
+				true
+			}
+			sortable = mainDiBind
 		}
-		_planList.onMenuDeleteClick = { _, _, _, _ ->
-			_planDetail.updateProgress()
-			true
+		_taskList = TaskListView(context).apply {
+			onClick += ::onClickTask
+			onCheckChange += fun (_: Any?, _: TaskView.Companion.CheckChangeEventArgs) {
+				_planDetail.updateProgress()
+			}
+			onMenuDeleteClick = { _, _, _, _ ->
+				_planDetail.updateProgress()
+				true
+			}
+			sortable = mainDiBind
 		}
-		_taskList.onMenuDeleteClick = { _, _, _, _ ->
-			_planDetail.updateProgress()
-			true
-		}
+
 
 		_rootLayout.addView(_planList, _listLayoutParams)
 		_rootLayout.addView(_taskList, _listLayoutParams)

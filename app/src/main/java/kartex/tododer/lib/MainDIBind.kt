@@ -11,15 +11,15 @@ import savvy.toolkit.Event
 import savvy.toolkit.EventArgs
 import java.util.*
 
-class MainDIBind {
+class MainDIBind : ISortable {
 
 	private var _sort: TodoSort = Const.SORT
 
 	// Events
-	val onChangeSort: Event<DIProviderEventArgs<TodoSort>> = Event(this)
+	override val onChangeSort: Event<DIProviderEventArgs<TodoSort>> = Event(this)
 
 	// Variables
-	var sort: TodoSort
+	override var sort: TodoSort
 		get() = _sort
 		set(value) {
 			_sort = value

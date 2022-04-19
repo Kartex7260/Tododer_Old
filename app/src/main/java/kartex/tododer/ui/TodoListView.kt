@@ -8,7 +8,9 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.contains
 import kartex.tododer.lib.Const
+import kartex.tododer.lib.DIProviderEventArgs
 import kartex.tododer.lib.IBindable
+import kartex.tododer.lib.ISortable
 import kartex.tododer.lib.extensions.removeFromParent
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.model.TodoDBEventArgs
@@ -17,6 +19,7 @@ import kartex.tododer.lib.todo.visitor.CardViewVisitor
 import kartex.tododer.lib.todo.visitor.ViewManagerVisitor
 import kartex.tododer.lib.todo.visitor.getCardViewManager
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
+import kartex.tododer.ui.sort.TodoSort
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.android.closestDI
@@ -34,6 +37,7 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	private var _bind: DB? = null
 
 	private val _eventLocker = Any()
+	private var _sortable: ISortable? = null
 	// </editor-fold>
 
 	// <editor-fold desc="PROP`S">
@@ -54,6 +58,18 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	val onClick: Event<TodoViewOnClickEventArgs> = Event(_eventLocker)
 
 	var onMenuDeleteClick: ((DB, Todo, MenuItem, TodoView<Todo>) -> Boolean)? = null
+
+	var sortable: ISortable?
+		get() = _sortable
+		set(value) {
+			_sortable?.apply {
+				onChangeSort -= ::onChangeSort
+			}
+			_sortable = value
+			_sortable?.apply {
+				onChangeSort += ::onChangeSort
+			}
+		}
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
@@ -78,10 +94,8 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	open fun updateAll() {
 		if (_bind == null) return
 
-		for (todo in _bind!!) {
-			val view = findViewById<TodoView<ITodo>>(todo.id)
-			view.updateFromBind()
-		}
+		removeAllViews()
+		showDB(_bind!!)
 	}
 
 	override fun onReadFromBind(t: DB) { }
@@ -107,22 +121,30 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	}
 
 	protected open fun onAdd(any: Any?, args: TodoDBEventArgs<Todo>) {
-		val todo = args.todo
-		showTodo(todo)
+		_bind?.also {
+			removeAllViews()
+			showDB(it)
+		}
 	}
 	protected open fun onEdit(any: Any?, args: TodoDBEventArgs<Todo>) {
-		val todo = args.todo
-		val view = findViewById<TodoView<ITodo>>(todo.id)
-		view.updateFromBind()
+		_bind?.also {
+			removeAllViews()
+			showDB(it)
+		}
 	}
 	protected open fun onRemove(any: Any?, args: TodoDBEventArgs<Todo>) {
-		val todo = args.todo
-		val view = findViewById<TodoView<ITodo>>(todo.id)
-		removeView(view)
+		_bind?.also {
+			removeAllViews()
+			showDB(it)
+		}
 	}
 	// </editor-fold>
 
 	// <editor-fold desc="PRIVATES">
+	private fun onChangeSort(any: Any?, args: DIProviderEventArgs<TodoSort>) {
+		updateAll()
+	}
+
 	private fun init() {
 		_viewManager = context.getCardViewManager()
 
@@ -130,7 +152,16 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 	}
 
 	private fun showDB(db: DB) {
-		for (todo in db) {
+		if (sortable == null) {
+			showSortedList(db)
+			return
+		}
+		val sorted = sortable!!.sort.sort(db)
+		showSortedList(sorted)
+	}
+
+	private fun showSortedList(list: Iterable<Todo>) {
+		for (todo in list) {
 			showTodo(todo)
 		}
 	}
@@ -145,7 +176,9 @@ open class TodoListView<Todo : ITodo, DB: IEventTodoDB<Todo>> : LinearLayout, IB
 		view.id = todo.id
 		func?.invoke(view)
 		view.setOnClickListener {
+			it.isEnabled = false
 			onClickCard(todo, view)
+			it.isEnabled = true
 		}
 		view.onMenuDeleteClick = {
 			_bind?.remove(todo.id)

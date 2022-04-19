@@ -14,8 +14,6 @@ import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
-import kartex.tododer.lib.todo.ITodo
-import kartex.tododer.ui.TodoView
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -65,6 +63,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		bind?.apply {
 			listView.bind = db
 			listView.onClick += ::onClick
+			listView.sortable = mainDiBind
 		}
 
 		savedInstanceState?.apply {
@@ -87,10 +86,6 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 		super.onSaveInstanceState(outState)
 		val nestedScrollView = requireView() as NestedScrollView
 		outState.putInt(STATE_KEY_SCROLL, nestedScrollView.scrollY)
-	}
-
-	override fun onOptionsItemSelected(item: MenuItem): Boolean {
-		return super.onOptionsItemSelected(item)
 	}
 	// </editor-fold>
 
@@ -117,7 +112,7 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
 			mainDiBind.optionMenu?.apply {
 				visiblePlanGroup(true)
-				fixColor()
+				resume()
 			}
 			mainToolbar.setupToolbar()
 		}
@@ -130,8 +125,10 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 	}
 
 	private fun addButtonClick(view: View) {
+		view.isEnabled = false
 		val plan = db.createPlan()
 		openPlan(plan)
+		view.isEnabled = true
 	}
 	// </editor-fold>
 	// </editor-fold>
