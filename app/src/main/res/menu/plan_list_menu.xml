@@ -13,6 +13,7 @@
         android:id="@+id/menuSort"/>
 
     <item
+        android:id="@+id/menuSettings"
         android:title="@string/menu_settings"
-        android:id="@+id/menuSettings" />
+        android:visible="false" />
 </menu>
