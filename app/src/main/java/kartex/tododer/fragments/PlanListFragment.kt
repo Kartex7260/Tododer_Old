@@ -14,6 +14,7 @@ import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.extensions.createPlan
 import kartex.tododer.lib.model.IEventTodoDB
 import kartex.tododer.lib.todo.IPlan
+import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.ui.events.TodoViewOnClickEventArgs
 import org.kodein.di.DI
 import org.kodein.di.DIAware
@@ -39,6 +40,14 @@ class PlanListFragment : Fragment(R.layout.fragment_todo_list), DIAware {
 			listView.updateAll()
 		}
 		setupActivityBind()
+	}
+
+	fun delete(todo: ITodo) {
+		bind?.apply {
+			listView.bind?.apply {
+				remove(todo.id)
+			}
+		}
 	}
 
 	// <editor-fold desc="FRAGMENT API">

@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageButton
 import kartex.tododer.R
 import kartex.tododer.extensions.getColorPrimary
 import kartex.tododer.lib.Const
+import kartex.tododer.lib.ISortable
 import kartex.tododer.lib.MainDIBind
 import kartex.tododer.lib.todo.ITodo
 import kartex.tododer.lib.todo.ITreeTodo
@@ -25,7 +26,7 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 
 	private var _onChangeSort: OnChangeSort? = null
 
-	private var _mainDiBind: MainDIBind? = null
+	private var _sortable: ISortable? = null
 
 	private var colorPrimary: Int = 0
 	// </editor-fold>
@@ -39,22 +40,22 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 	override val xmlStyleable: IntArray
 		get() = R.styleable.TreeTodoDetailView
 
-	open var mainDiBind: MainDIBind?
-		get() = _mainDiBind
+	open var sortable: ISortable?
+		get() = _sortable
 		set(value) {
-			_mainDiBind = value
+			_sortable = value
 			updateSortButton()
 			updateRevButton()
 		}
 
 	open var sort: TodoSort?
-		get() = _mainDiBind?.sort
+		get() = _sortable?.sort
 		set(value) {
 			if (value == null) {
-				_mainDiBind = null
+				_sortable = null
 				return
 			}
-			_mainDiBind?.sort = value
+			_sortable?.sort = value
 			_onChangeSort?.invoke(this, value)
 			updateSortButton()
 			updateRevButton()
@@ -102,50 +103,50 @@ open class TreeTodoDetailView<TreeType : ITodo, Todo : ITreeTodo<TreeType>> : Re
 		buttonSortReverse.setImageDrawable(reverseDrawable)
 
 		buttonSortType.setOnClickListener { view ->
-			if (_mainDiBind == null)
+			if (_sortable == null)
 				return@setOnClickListener
 			val sortDialog = sortFunc?.invoke() ?: return@setOnClickListener
 			sortDialog.setCallback {
-				val reverse = _mainDiBind!!.sort.reverse
-				_mainDiBind!!.sort = it.toTodoSort(reverse) ?: return@setCallback
-				_onChangeSort?.invoke(view, _mainDiBind!!.sort)
+				val reverse = _sortable!!.sort.reverse
+				_sortable!!.sort = it.toTodoSort(reverse) ?: return@setCallback
+				_onChangeSort?.invoke(view, _sortable!!.sort)
 				updateSortButton()
 			}
 		}
 
 		buttonSortReverse.setOnClickListener {
-			if (_mainDiBind == null)
+			if (_sortable == null)
 				return@setOnClickListener
-			_mainDiBind!!.sort = _mainDiBind!!.sort.asReverse()
-			_onChangeSort?.invoke(it, _mainDiBind!!.sort)
+			_sortable!!.sort = _sortable!!.sort.asReverse()
+			_onChangeSort?.invoke(it, _sortable!!.sort)
 			updateRevButton()
 		}
 	}
 
 	fun callback(sortResult: SortDialogFragment.Companion.SortResult) {
-		if (_mainDiBind == null)
+		if (_sortable == null)
 			return
-		val currentReverse = _mainDiBind!!.sort.reverse
+		val currentReverse = _sortable!!.sort.reverse
 		val todoSort = sortResult.toTodoSort(currentReverse) ?: return
-		_mainDiBind!!.sort = todoSort
+		_sortable!!.sort = todoSort
 		updateSortButton()
 		_onChangeSort?.invoke(this, todoSort)
 	}
 
 	// <editor-fold desc="PRIVATE">
 	private fun updateRevButton() {
-		if (_mainDiBind == null)
+		if (_sortable == null)
 			return
-		if (_mainDiBind!!.sort.reverse)
+		if (_sortable!!.sort.reverse)
 			buttonSortReverse.rotation = 180f
 		else
 			buttonSortReverse.rotation = 0f
 	}
 
 	private fun updateSortButton() {
-		if (_mainDiBind == null)
+		if (_sortable == null)
 			return
-		val drawable = _mainDiBind!!.sort.getDrawable(context).apply {
+		val drawable = _sortable!!.sort.getDrawable(context).apply {
 			val colorPrimary = context.getColorPrimary()
 			setTint(colorPrimary)
 		}

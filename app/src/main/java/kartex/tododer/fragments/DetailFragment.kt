@@ -79,7 +79,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		stack.onPop -= ::onPop
 		stack.clear()
 
-		val planListFragment = parentFragmentManager.findFragmentByTag(Const.FragmentTags.PLAN_LIST) as PlanListFragment
+		val planListFragment = getPlanListFragment()
 		planListFragment.resume()
 	}
 
@@ -87,23 +87,40 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		super.onViewCreated(view, savedInstanceState)
 		val context = requireContext()
 
-		_planDetail = view.findViewById(R.id.fragmentDetailPlan)
-		_taskDetail = view.findViewById(R.id.fragmentDetailTask)
-		_planDetail.autoWriteToBind = true
-		_taskDetail.autoWriteToBind = true
-
 		val sortFun = fun (): SortDialogFragment {
 			val sortDialog = SortDialogFragment()
 			sortDialog.show(parentFragmentManager, null)
 			return sortDialog
 		}
 
-		_taskDetail.mainDiBind = mainDiBind
-		_taskDetail.sortFunc = sortFun
-
-		_planDetail.mainDiBind = mainDiBind
-		_planDetail.sortFunc = sortFun
-
+		_planDetail = view.findViewById<PlanDetailView?>(R.id.fragmentDetailPlan).apply {
+			autoWriteToBind = true
+			sortable = mainDiBind
+			sortFunc = sortFun
+			deleteListener = fun (args: TodoDetailView.Companion.DeleteEventArgs<IPlan>) {
+				if (args.bind == null)
+					return
+				onBackDelete(args.bind) { todo ->
+					_planList.bind?.also { db ->
+						db.remove(todo.id)
+					}
+				}
+			}
+		}
+		_taskDetail = view.findViewById<TaskDetailView?>(R.id.fragmentDetailTask).apply {
+			autoWriteToBind = true
+			sortable = mainDiBind
+			sortFunc = sortFun
+			deleteListener = fun (args: TodoDetailView.Companion.DeleteEventArgs<ITask>) {
+				if (args.bind == null)
+					return
+				onBackDelete(args.bind) { todo ->
+					_taskList.bind?.also { db ->
+						db.remove(todo.id)
+					}
+				}
+			}
+		}
 		_rootLayout = view.findViewById(R.id.fragmentDetailRoot)
 
 		_planList = TodoListView<IPlan, IEventTodoDB<IPlan>>(context).apply {
@@ -151,7 +168,29 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		return super.onContextItemSelected(item)
 	}
 
+	fun onBack() {
+		if (stack.count == 1)
+			parentFragmentManager.popBackStack()
+		else
+			stack.pop()
+	}
+
+	fun onBackDelete(todo: ITodo, onPop: (todo: ITodo) -> Unit) {
+		if (stack.count == 1) {
+			val planListFragment = getPlanListFragment()
+			planListFragment.delete(todo)
+			parentFragmentManager.popBackStack()
+		} else {
+			stack.pop()
+			onPop(todo)
+		}
+	}
+
 	// <editor-fold desc="PRIVATE">
+
+	private fun getPlanListFragment() = parentFragmentManager
+		.findFragmentByTag(Const.FragmentTags.PLAN_LIST) as PlanListFragment
+
 	private fun setupActivityBind() {
 		activityBind?.apply {
 			mainAddButton.setOnClickListener { addButtonClick(it) }
@@ -164,11 +203,7 @@ class DetailFragment : Fragment(R.layout.fragment_todo_detail), DIAware {
 		setTitle(R.string.plan)
 		setNavigationIcon(R.drawable.arrow_back)
 		setNavigationOnClickListener {
-			if (stack.count == 1) {
-				parentFragmentManager.popBackStack()
-			} else {
-				stack.pop()
-			}
+			onBack()
 		}
 	}
 

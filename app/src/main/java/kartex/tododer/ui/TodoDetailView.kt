@@ -14,7 +14,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.getSystemService
 import kartex.tododer.R
 import kartex.tododer.lib.todo.ITodo
+import savvy.toolkit.EventArgs
 import java.lang.NullPointerException
+
+typealias OnDeleteListener <Todo> = (TodoDetailView.Companion.DeleteEventArgs<Todo>) -> Unit
 
 open class TodoDetailView<Todo : ITodo> : FrameLayout {
 
@@ -38,6 +41,8 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 	private lateinit var deleteButton: AppCompatImageButton
 
 	private var writeFromUser: Boolean = true
+
+	private var _deleteListener: OnDeleteListener<Todo>? = null
 	// </editor-fold>
 
 	// <editor-fold desc="PROP`S">
@@ -69,6 +74,16 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 		}
 
 	open var autoWriteToBind: Boolean = false
+
+	open var deleteListener: OnDeleteListener<Todo>?
+		get() = _deleteListener
+		set(value) {
+			_deleteListener = value
+			deleteButton.setOnClickListener {
+				val args = DeleteEventArgs(_bindTodo)
+				_deleteListener?.invoke(args)
+			}
+		}
 	// </editor-fold>
 
 	// <editor-fold desc="CTOR`S">
@@ -101,14 +116,6 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 		requestLayout()
 	}
 
-	open fun setOnDeleteListener(l: OnClickListener) {
-		deleteButton.setOnClickListener(l)
-	}
-
-	open fun registerEditTextAWTB(editText: EditText) {
-		editText.addTextChangedListener(textWatcher)
-	}
-
 	// <editor-fold desc="PROTECTED">
 	// CALLBACK`S
 	protected open fun onReadFromBind(todo: Todo) {
@@ -133,6 +140,10 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 	}
 
 	// UTIL
+	protected open fun registerEditTextAWTB(editText: EditText) {
+		editText.addTextChangedListener(textWatcher)
+	}
+
 	protected open fun toEditable(source: CharSequence): Editable {
 		return Editable.Factory.getInstance().newEditable(source)
 	}
@@ -165,4 +176,9 @@ open class TodoDetailView<Todo : ITodo> : FrameLayout {
 		return layoutInflater.inflate(resId, null) as ConstraintLayout
 	}
 	// </editor-fold>
+
+	companion object {
+
+		class DeleteEventArgs<Todo : ITodo>(val bind: Todo?) : EventArgs()
+	}
 }
