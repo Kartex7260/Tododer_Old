@@ -14,7 +14,4 @@
 4. ViewBinding
 5. Kodein (DI)
 
-<figure>
-<img caption="Главный экран" scr="readme_pics/Screenshot_20230909_160301.png" width="480"/>
-<figcaption>Главный экран</figcaption>
-</figure>
+![Главный экран](readme_pics/Screenshot_20230909_160301.png)
