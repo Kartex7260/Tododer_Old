@@ -14,4 +14,6 @@
 4. ViewBinding
 5. Kodein (DI)
 
-![Главный экран](readme_pics/Screenshot_20230909_160301.png)
+![Главный экран](readme_pics/pics_main_screen.png)
+![Экран плана](readme_pics/pics_plan_screen.png)
+![Экран задачи](readme_pics/pics_task_screen.png)
